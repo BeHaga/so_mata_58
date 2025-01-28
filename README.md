@@ -3,7 +3,7 @@
 
 **Cronograma**:
 - **Dia 27/01:** Planejamento e setup do projeto (⌛)
-    - Instalar o Vite
+    - Instalar o Vite (✅)
     - Configurar as dependências a ser utilizadas (chart.js, async/await)
     - Pensar no design das telas
         - Entrada de dados de cada processo (tempo de chegada, execução, deadline, quantum, etc.)
@@ -29,13 +29,18 @@
 
 ## 3. Metas
 
-- Rodar o projeto usando npm start
+- Rodar o projeto usando npm start (execução final ou produção)
 - Manter o README.md sempre atualizado
 
 ## 4. Como instalar as dependências
 
 - npm install
-- Usar Vite para facilitar o desenvolvimento
+- Usar Vite 6.1.1 para facilitar o desenvolvimento
+    - ``npm create vite@latest`` (instalar o Vite)
+        - React
+        - TypeScript
+    - ``npm install`` (instalar as dependências)
+    - ``npm run dev`` (para rodar o projeto)
 - Usar .gitignore para excluir os arquivos desnecessários como o node_modules
 - Commits claros
 - Tentar comentar o código usando comentários do tipo JSDoc

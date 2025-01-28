@@ -7,7 +7,7 @@
     - Configurar as dependências a ser utilizadas (chart.js, async/await)
     - Pensar no design das telas
         - Entrada de dados de cada processo (tempo de chegada, execução, deadline, quantum, etc.)
-            - Pensei em usar components para fazer isso
+            - Pensei em usar components para fazer isso (✅)
         - Simulação em tempo real (Gantt, memória RAM e disco)
     - Criar um layout básico com os elementos principais
 - **Dia 28/01:** Estruturas de dados e RAM/Disco (❌)
@@ -34,7 +34,6 @@
 
 ## 4. Como instalar as dependências
 
-- npm install
 - Usar Vite 6.1.1 para facilitar o desenvolvimento
     - ``npm create vite@latest`` (instalar o Vite)
         - React

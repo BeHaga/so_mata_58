@@ -1,0 +1,63 @@
+* {
+    font-size: 10px;
+    font-family: 'DM Sans';
+    font-weight: 700;
+}
+
+.processo {
+    display: flex;
+    flex-direction: column;
+    width: 36rem;
+    height: 16rem;
+    border-radius: 1rem;
+    padding: 1rem;
+    background-color: #888;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.infoDoProcesso {
+    width: 36rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.infoDoProcesso>h2 {
+    font-size: 1.6rem;
+}
+
+.infoDoProcesso>button {
+    background-color: red;
+    font-weight: 900;
+    color: #000;
+}
+
+.linha {
+    width: 36rem;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+
+.coluna {
+    width: 36rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.nomeAtributo {
+    font-size: 1.2rem;
+}
+
+.inputAtributo {    
+    font-size: 1.2rem;
+    width: 5rem;    
+    border-radius: 1rem;
+    text-align: center;
+    appearance: none;
+}

@@ -15,20 +15,46 @@ function App() {
   // const [count, setCount] = useState(0);
   
   // const [processos, setProcessos] = useState<Processo[]>([]);
-  const [processos, setProcessos] = useState<JSX.Element[]>([]);
+  const [processos, setProcessos] = useState<{key: number}[]>([{key: 1}]); {/*key 1 pois precisa de pelo menos um processo*/}
 
   const criarProcesso = () => {
     // setProcessos(true);
-    setProcessos((prev) => [...prev, <Processos key={prev.length} />]);
+    // setProcessos((prev) => [...prev, <Processos key={prev.length} />]);
+    // const novoProcesso = {key: processos[-1].key + 1};
+    // const inicial = processos[0].key;
+    // const novoProcesso = {key: inicial + 1};
+    const novoProcesso = {key: processos.length + 1};
+    setProcessos((prev) => [...prev, novoProcesso]);
+  };
+
+  const excluirProcesso = (key: number) => {
+    if (processos.length > 1) {
+      setProcessos((prev) => {
+        const processosRestantes = prev.filter((processo) => processo.key !== key);
+        
+        const processosKeysAtualizadas = processosRestantes.map((processo, index) => ({
+          ...processo,
+          key: index + 1,
+        }));
+        return processosKeysAtualizadas;
+      })
+    }    
   };
 
   return (
     <>
-      <Escolhas></Escolhas>
+      <Escolhas />
       <button className='addProcessos' onClick={criarProcesso}>Adicionar processo</button>
       <div className='processos'>
         {/* {processo && <Processos />} */}
-        {processos}
+        {/* {processos} */}
+        {processos.map((processo) => (
+          <Processos 
+            key={processo.key}
+            numero={processo.key}
+            onDelete={() => excluirProcesso(processo.key)}
+          />
+        ))}
       </div>
       {/* <Processos></Processos> */}
 

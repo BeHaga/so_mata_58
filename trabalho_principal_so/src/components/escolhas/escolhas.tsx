@@ -36,11 +36,11 @@ export default function Escolhas() {
             <div className='definicoesSistema'>
                 <div className='definicao'>
                     <h3 className='nomeAtributo'>Quantum:</h3>
-                    <input className='inputAtributo' type="number" name="Quantum" id="" placeholder="Quantum" min="1" /> {/* definir valor presetado */}
+                    <input className='inputAtributo' type="number" name="Quantum" id="" placeholder="Quantum" min="1" defaultValue={1} /> {/* definir valor presetado */}
                 </div>
                 <div className='definicao'>
                     <h3 className='nomeAtributo'>Sobrecarga:</h3>
-                    <input className='inputAtributo' type="number" name="Sobrecarga" id="" placeholder="Sobrecarga" min="0" /> {/* definir valor presetado */}
+                    <input className='inputAtributo' type="number" name="Sobrecarga" id="" placeholder="Sobrecarga" min="1" defaultValue={1} /> {/* definir valor presetado */}
                 </div>
             </div>
         </section>

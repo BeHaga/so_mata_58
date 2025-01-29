@@ -14,7 +14,7 @@ export default function Processos() {
                 </div>
                 <div className='coluna'>
                     <h3 className='nomeAtributo'>Tempo de execução:</h3>
-                    <input className='inputAtributo' type="number" name="tempoDeExecucao" id="" placeholder="Tempo de Execução" min="0" /> {/* definir valor presetado */}
+                    <input className='inputAtributo' type="number" name="tempoDeExecucao" id="" placeholder="Tempo de Execução" min="1" /> {/* definir valor presetado */}
                 </div>
             </div>
             <div className='linha'>
@@ -24,7 +24,7 @@ export default function Processos() {
                 </div>
                 <div className='coluna'>
                     <h3 className='nomeAtributo'>A definir:</h3>
-                    <input className='inputAtributo' type="number" name="aDefinir" id="" placeholder="a definir" min="0" /> {/* definir valor presetado */}
+                    <input className='inputAtributo' type="number" name="aDefinir" id="" placeholder="a definir" min="1" /> {/* definir valor presetado */}
                 </div>
             </div>   
         </section>

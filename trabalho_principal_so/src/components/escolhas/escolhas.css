@@ -1,0 +1,53 @@
+* {
+    font-size: 10px;
+    font-family: 'DM Sans';
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 1.6rem;
+}
+
+button {
+    font-size: 1.2rem;
+    background-color: #1a1a1a;
+}
+
+.escalonamento {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.substituicao {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.definicoesSistema {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-bottom: 1rem;
+}
+
+.definicao {
+    /* width: 36rem; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.nomeAtributo {
+    font-size: 1.2rem;
+}
+
+.inputAtributo {    
+    font-size: 1.2rem;
+    width: 5rem;    
+    border-radius: 1rem;
+    text-align: center;
+    appearance: none;
+}

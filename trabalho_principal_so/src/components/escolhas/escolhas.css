@@ -28,8 +28,10 @@ button {
 .definicoesSistema {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    /* justify-content: space-between; */
+    justify-content: center;
     padding-bottom: 1rem;
+    gap: 1rem;
 }
 
 .definicao {

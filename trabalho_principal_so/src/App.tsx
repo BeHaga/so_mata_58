@@ -1,16 +1,39 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+// import reactLogo from './assets/react.svg'
+// import viteLogo from '/vite.svg'
 import './App.css'
 
 import Processos from './components/processos/processos.tsx'
+import Escolhas from './components/escolhas/escolhas.tsx'
+
+// interface Processo {
+//   id: string;
+//   component: JSX.Element;
+// }
 
 function App() {
-  const [count, setCount] = useState(0)
+  // const [count, setCount] = useState(0);
+  
+  // const [processos, setProcessos] = useState<Processo[]>([]);
+  const [processos, setProcessos] = useState<JSX.Element[]>([]);
+
+  const criarProcesso = () => {
+    // setProcessos(true);
+    setProcessos((prev) => [...prev, <Processos key={prev.length} />]);
+  };
 
   return (
     <>
-      <Processos></Processos>
+      <Escolhas></Escolhas>
+      <button className='addProcessos' onClick={criarProcesso}>Adicionar processo</button>
+      <div className='processos'>
+        {/* {processo && <Processos />} */}
+        {processos}
+      </div>
+      {/* <Processos></Processos> */}
+
+
+
       {/* <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />

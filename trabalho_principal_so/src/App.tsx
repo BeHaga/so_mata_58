@@ -15,7 +15,7 @@ function App() {
   // const [count, setCount] = useState(0);
   
   // const [processos, setProcessos] = useState<Processo[]>([]);
-  const [processos, setProcessos] = useState<{key: number}[]>([{key: 1}]); {/*key 1 pois precisa de pelo menos um processo*/}
+  const [processos, setProcessos] = useState<{key: number, tempoDeChegada: number, tempoDeExecucao: number, deadline: number, paginas: number}[]>([{key: 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1}]); {/*key 1 pois precisa de pelo menos um processo*/}
 
   const criarProcesso = () => {
     // setProcessos(true);
@@ -23,7 +23,7 @@ function App() {
     // const novoProcesso = {key: processos[-1].key + 1};
     // const inicial = processos[0].key;
     // const novoProcesso = {key: inicial + 1};
-    const novoProcesso = {key: processos.length + 1};
+    const novoProcesso = {key: processos.length + 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1};
     setProcessos((prev) => [...prev, novoProcesso]);
   };
 
@@ -52,6 +52,10 @@ function App() {
           <Processos 
             key={processo.key}
             numero={processo.key}
+            tempoDeChegada={processo.tempoDeChegada}
+            tempoDeExecucao={processo.tempoDeExecucao}
+            deadline={processo.deadline}
+            paginas={processo.paginas}
             onDelete={() => excluirProcesso(processo.key)}
           />
         ))}

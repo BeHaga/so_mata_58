@@ -18,6 +18,7 @@ function App() {
   // const [escolhas, setEscolhas] = useState<{escalonamento: string, paginacao: string, quantum: number, sobrecarga: number}[]>([{escalonamento: "FIFO", paginacao: "FIFO", quantum: 1, sobrecarga: 1}]);
   const [escolhas, setEscolhas] = useState<{escalonamento: string, paginacao: string, quantum: number, sobrecarga: number}>({escalonamento: "FIFO", paginacao: "FIFO", quantum: 1, sobrecarga: 1});
   const [processos, setProcessos] = useState<{key: number, tempoDeChegada: number, tempoDeExecucao: number, deadline: number, paginas: number}[]>([{key: 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1}]); {/*key 1 pois precisa de pelo menos um processo*/}
+  const [exibirGrafico, setExibirGrafico] = useState(false);
 
   const criarProcesso = () => {
     // setProcessos(true);
@@ -57,6 +58,15 @@ function App() {
     // setEscolhas((escolhas) => ({ ...escolhas, ...updatedValues}))
   }
 
+  const executar = () => {
+    setExibirGrafico(true)
+  }
+
+  const resetar = () => {
+    setExibirGrafico(false)
+    setProcessos([{key: 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1}])
+  }
+
   return (
     <>          
       <Escolhas 
@@ -66,10 +76,24 @@ function App() {
         sobrecarga={escolhas.sobrecarga}
         onUpdate={(updatedValues) => atualizarEscolha(updatedValues)}
       />
+      <hr />
       <h2>Escalonamento selecionado: {escolhas.escalonamento}</h2>
       <h2>Paginação selecionada: {escolhas.paginacao}</h2>
       <h2>Tempo de chegada do 1° processo: {processos[0].tempoDeChegada}</h2>
-      <button className='addProcessos' onClick={criarProcesso}>Adicionar processo</button>
+      <div className='botoes'>        
+        <button className='addProcessos' onClick={criarProcesso}>Adicionar processo</button>
+        <button className='botaoExecutar' onClick={executar}>Executar</button>
+        <button className='botaoResetarProcessos' onClick={resetar}>Resetar processos</button>
+      </div>
+      <hr />
+      {exibirGrafico && (
+        <section>
+          <h2>Gráfico de Gantt</h2>
+        </section>
+      )}
+      {exibirGrafico && (
+        <hr />
+      )}
       <div className='processos'>
         {/* {processo && <Processos />} */}
         {/* {processos} */}
@@ -85,7 +109,8 @@ function App() {
             onUpdate={(updatedValues) => atualizarProcesso(processo.key, updatedValues)}
           />
         ))}
-      </div>
+      </div>      
+      <hr />
       {/* <Processos></Processos> */}
 
 

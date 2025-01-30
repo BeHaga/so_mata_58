@@ -5,8 +5,26 @@
   text-align: center;
 }
 
+.botoes {
+  font-size: 1.6rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding-bottom: 1rem;
+}
+
 .addProcessos {
   font-size: 1.6rem;
+}
+
+.botaoExecutar {
+  font-size: 1.6rem;
+  background-color: green;
+}
+
+.botaoResetarProcessos {
+  font-size: 1.6rem;
+  background-color: red;
 }
 
 .processos {

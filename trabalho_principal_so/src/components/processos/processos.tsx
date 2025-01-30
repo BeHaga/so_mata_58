@@ -8,13 +8,25 @@ interface ProcessoProps {
     deadline: number;
     paginas: number;
     onDelete: () => void;
+    onUpdate: (updateValues: Partial<ProcessoProps>) => void;
 }
 
-export default function Processos({ numero, onDelete, tempoDeChegada, tempoDeExecucao, deadline, paginas } : ProcessoProps) {
+export default function Processos({ numero, onDelete, onUpdate, tempoDeChegada, tempoDeExecucao, deadline, paginas } : ProcessoProps) {
     const [chegada, setChegada] = useState(tempoDeChegada);
     const [execucao, setExecucao] = useState(tempoDeExecucao);
     const [valorDeadline, setValorDeadline] = useState(deadline);
     const [qtdPaginas, setQtdPaginas] = useState(paginas);
+
+    const handleChange = (key: string, value: number) => {
+        if (key === "tempoDeChegada") setChegada(value);
+        if (key === "tempoDeExecucao") setExecucao(value);
+        if (key === "deadline") setValorDeadline(value);
+        if (key === "paginas") setQtdPaginas(value);
+
+        onUpdate({
+            [key]: value,
+        });
+    }
 
     return (
         <section className='processo'>
@@ -34,7 +46,7 @@ export default function Processos({ numero, onDelete, tempoDeChegada, tempoDeExe
                         min="0" 
                         // defaultValue={0} 
                         value={chegada}
-                        onChange={(e) => setChegada(Number(e.target.value))}
+                        onChange={(e) => handleChange("tempoDeChegada", Number(e.target.value))}
                     />
                 </div>
                 <div className='coluna'>
@@ -47,8 +59,8 @@ export default function Processos({ numero, onDelete, tempoDeChegada, tempoDeExe
                         placeholder="Tempo de Execução" 
                         min="1" 
                         // defaultValue={1} 
-                        value={execucao}
-                        onChange={(e) => setExecucao(Number(e.target.value))}
+                        value={execucao}                    
+                        onChange={(e) => handleChange("tempoDeExecucao", Number(e.target.value))}
                     />
                 </div>
             </div>
@@ -64,7 +76,7 @@ export default function Processos({ numero, onDelete, tempoDeChegada, tempoDeExe
                         min="0" 
                         // defaultValue={0} 
                         value={valorDeadline}
-                        onChange={(e) => setValorDeadline(Number(e.target.value))}
+                        onChange={(e) => handleChange("deadline", Number(e.target.value))}
                     />
                 </div>
                 <div className='coluna'>
@@ -78,7 +90,7 @@ export default function Processos({ numero, onDelete, tempoDeChegada, tempoDeExe
                         min="1" 
                         // defaultValue={1} 
                         value={qtdPaginas}
-                        onChange={(e) => setQtdPaginas(Number(e.target.value))}
+                        onChange={(e) => handleChange("paginas", Number(e.target.value))}
                     />
                 </div>
             </div>   

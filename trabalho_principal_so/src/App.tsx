@@ -15,6 +15,8 @@ function App() {
   // const [count, setCount] = useState(0);
   
   // const [processos, setProcessos] = useState<Processo[]>([]);
+  // const [escolhas, setEscolhas] = useState<{escalonamento: string, paginacao: string, quantum: number, sobrecarga: number}[]>([{escalonamento: "FIFO", paginacao: "FIFO", quantum: 1, sobrecarga: 1}]);
+  const [escolhas, setEscolhas] = useState<{escalonamento: string, paginacao: string, quantum: number, sobrecarga: number}>({escalonamento: "FIFO", paginacao: "FIFO", quantum: 1, sobrecarga: 1});
   const [processos, setProcessos] = useState<{key: number, tempoDeChegada: number, tempoDeExecucao: number, deadline: number, paginas: number}[]>([{key: 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1}]); {/*key 1 pois precisa de pelo menos um processo*/}
 
   const criarProcesso = () => {
@@ -41,9 +43,32 @@ function App() {
     }    
   };
 
+  const atualizarProcesso = (key: number, updatedValues: Partial<typeof processos[0]>) => {
+    setProcessos((prev) => 
+      prev.map((p) => (p.key == key ? { ...p, ...updatedValues } : p))
+    )
+  }
+
+  const atualizarEscolha = (updatedValues: Partial<typeof escolhas>) => {
+    setEscolhas((prevEscolhas) => {
+      const novasEscolhas = { ...prevEscolhas, ...updatedValues };
+      return novasEscolhas;
+    })
+    // setEscolhas((escolhas) => ({ ...escolhas, ...updatedValues}))
+  }
+
   return (
-    <>
-      <Escolhas />
+    <>          
+      <Escolhas 
+        escalonamento={escolhas.escalonamento}
+        paginacao={escolhas.paginacao}
+        quantum={escolhas.quantum}
+        sobrecarga={escolhas.sobrecarga}
+        onUpdate={(updatedValues) => atualizarEscolha(updatedValues)}
+      />
+      <h2>Escalonamento selecionado: {escolhas.escalonamento}</h2>
+      <h2>Paginação selecionada: {escolhas.paginacao}</h2>
+      <h2>Tempo de chegada do 1° processo: {processos[0].tempoDeChegada}</h2>
       <button className='addProcessos' onClick={criarProcesso}>Adicionar processo</button>
       <div className='processos'>
         {/* {processo && <Processos />} */}
@@ -57,6 +82,7 @@ function App() {
             deadline={processo.deadline}
             paginas={processo.paginas}
             onDelete={() => excluirProcesso(processo.key)}
+            onUpdate={(updatedValues) => atualizarProcesso(processo.key, updatedValues)}
           />
         ))}
       </div>

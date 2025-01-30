@@ -2,17 +2,44 @@ import './escolhas.css';
 
 import { useState } from 'react';
 
-export default function Escolhas() {    
-    const [botaoSelecionadoEscalonamento, setBotaoSelecionadoEscalonamento] = useState<string>('FIFO');
-    const [botaoSelecionadoPaginacao, setBotaoSelecionadoPaginacao] = useState<string>('FIFO');
+interface EscolhaProps {
+    escalonamento: string;
+    paginacao: string;
+    quantum: number;
+    sobrecarga: number;    
+    onUpdate: (updateValues: Partial<EscolhaProps>) => void;
+}
+
+export default function Escolhas({escalonamento, paginacao, quantum, sobrecarga, onUpdate} : EscolhaProps) {    
+    const [botaoSelecionadoEscalonamento, setBotaoSelecionadoEscalonamento] = useState<string>(escalonamento);
+    const [botaoSelecionadoPaginacao, setBotaoSelecionadoPaginacao] = useState<string>(paginacao);
+    const [valorQuantum, setValorQuantum] = useState(quantum);
+    const [valorSobrecarga, setValorSobrecarga] = useState(sobrecarga);
 
     const apertarEscalonamento = (button: string) => {
         setBotaoSelecionadoEscalonamento(button);
+
+        onUpdate({
+            ["escalonamento"]: button,
+        })
     };
 
     const apertarPaginacao = (button: string) => {
         setBotaoSelecionadoPaginacao(button);
+
+        onUpdate({
+            ["paginacao"]: button,
+        })
     };
+
+    const handleChange = (key: string, value: number) => {
+        if (key === "quantum") setValorQuantum(value);
+        if (key === "sobrecarga") setValorSobrecarga(value);
+
+        onUpdate({
+            [key]: value,
+        });
+    }
 
     return (
         <section>
@@ -36,11 +63,33 @@ export default function Escolhas() {
             <div className='definicoesSistema'>
                 <div className='definicao'>
                     <h3 className='nomeAtributo'>Quantum:</h3>
-                    <input className='inputAtributo' type="number" name="Quantum" id="" placeholder="Quantum" min="1" defaultValue={1} /> {/* definir valor presetado */}
+                    <input 
+                        className='inputAtributo' 
+                        type="number" 
+                        // name="Quantum" 
+                        // id="" 
+                        placeholder="Quantum" 
+                        min="1" 
+                        // defaultValue={1}
+                        value={valorQuantum}
+                        // onChange={(e) => setValorQuantum(Number(e.target.value))}                        
+                        onChange={(e) => handleChange("quantum", Number(e.target.value))}
+                    />
                 </div>
                 <div className='definicao'>
                     <h3 className='nomeAtributo'>Sobrecarga:</h3>
-                    <input className='inputAtributo' type="number" name="Sobrecarga" id="" placeholder="Sobrecarga" min="1" defaultValue={1} /> {/* definir valor presetado */}
+                    <input 
+                        className='inputAtributo' 
+                        type="number" 
+                        // name="Sobrecarga" 
+                        // id="" 
+                        placeholder="Sobrecarga" 
+                        min="1" 
+                        // defaultValue={1}
+                        value={valorSobrecarga}
+                        // onChange={(e) => setValorSobrecarga(Number(e.target.value))} 
+                        onChange={(e) => handleChange("sobrecarga", Number(e.target.value))}
+                    />
                 </div>
             </div>
         </section>

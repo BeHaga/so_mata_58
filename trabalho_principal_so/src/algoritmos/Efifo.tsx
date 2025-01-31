@@ -1,23 +1,9 @@
 function Efifo (processos: {key: number, tempoDeChegada: number, tempoDeExecucao: number, deadline: number, paginas: number}[]) {
-    const ordemChegada = []
-    const processosIniciais = [...processos]
+    const ordemChegada = [...processos]
+    ordemChegada.sort((a, b) => a.tempoDeChegada - b.tempoDeChegada);
     const processosExecutados = []
-
-    while (processosIniciais.length > 0) {
-        let chegouPrimeiro = processosIniciais[0];
-        let indice = 0;
-
-        for (let i = 1; i < processosIniciais.length; i++) {
-            if (processosIniciais[i].tempoDeChegada < chegouPrimeiro.tempoDeChegada) {
-                chegouPrimeiro = processosIniciais[i];
-                indice = i;
-            }
-        }
-        ordemChegada.push(chegouPrimeiro)
-        processosIniciais.splice(indice, 1)
-    }
-
     const matriz = []
+
 
     // tempoDecorrido = eixo x do gráfico
     // tempoExecutado = tempoDeExecucao do processo a cada u.t.

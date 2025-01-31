@@ -6,6 +6,7 @@ import './App.css'
 import Processos from './components/processos/processos.tsx'
 import Escolhas from './components/escolhas/escolhas.tsx'
 import Efifo from './algoritmos/Efifo.tsx'
+import Quadrado from './components/quadrado/quadrado.tsx'
 
 // interface Processo {
 //   id: string;
@@ -20,8 +21,7 @@ function App() {
   const [escolhas, setEscolhas] = useState<{escalonamento: string, paginacao: string, quantum: number, sobrecarga: number}>({escalonamento: "FIFO", paginacao: "FIFO", quantum: 1, sobrecarga: 1});
   const [processos, setProcessos] = useState<{key: number, tempoDeChegada: number, tempoDeExecucao: number, deadline: number, paginas: number}[]>([{key: 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1}]); {/*key 1 pois precisa de pelo menos um processo*/}
   const [exibirGrafico, setExibirGrafico] = useState(false);
-  const [ordemChegada, setOrdemChegada] = useState<{key: number, tempoDeChegada: number, tempoDeExecucao: number, deadline: number, paginas: number}[]>([])
-  const [turnaround, setTurnaround] = useState(0)
+  const [logica, setLogica] = useState<{tempoMedio: number, processosExecutados: number[], matriz: string[][], eixox: number[]}>()
 
   const criarProcesso = () => {
     // setProcessos(true);
@@ -62,16 +62,17 @@ function App() {
   }
 
   const resetar = () => {
-    setExibirGrafico(false)
-    setProcessos([{key: 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1}])
-    setOrdemChegada([]);
+    setExibirGrafico(false)    
+    setProcessos([])
+    setProcessos([processos[0]])
+    // setProcessos([{key: 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1}])
+    // setOrdemChegada([]);
   }
 
   const executar = () => {
     if (escolhas.escalonamento === 'FIFO') {
-      const turnaround = Efifo(processos);
-      setTurnaround(turnaround)
-      // setOrdemChegada(turnaround);
+      const escalonador = Efifo(processos);
+      setLogica(escalonador)
     } else if (escolhas.escalonamento === 'SJF') {
 
     } else if (escolhas.escalonamento === 'RR') {
@@ -94,7 +95,7 @@ function App() {
       <hr />
       <h2>Escalonamento selecionado: {escolhas.escalonamento}</h2>
       <h2>Paginação selecionada: {escolhas.paginacao}</h2>
-      <h2>Tempo de chegada do 1° processo: {processos[0].tempoDeChegada}</h2>
+      {/* <h2>Tempo de chegada do 1° processo: {processos[0].tempoDeChegada}</h2> */}
       <div className='botoes'>
         {!exibirGrafico && (<button className='addProcessos' onClick={criarProcesso}>Adicionar processo</button>)}        
         <button className='botaoExecutar' onClick={executar}>Executar</button>
@@ -102,17 +103,29 @@ function App() {
       </div>
       <hr />
       {exibirGrafico && (
-        <section>
+        <section className='graficoGantt'>
           <h2>Gráfico de Gantt</h2>
-          {/* <canvas id="ganttChart" width={400} height={200}></canvas> */}
-          {/* console.log({ordemChegada[0].key})
-          {ordemChegada.map((processo, index) => (
-            <h2 key={index}>Processo {processo.key}</h2>
-          ))} */}
-          <h2>Turnaround: {turnaround}</h2>
-          {/* <h2>{ordemChegada[0].key}</h2>
-          <h2>{ordemChegada[1].key}</h2>
-          <h2>{ordemChegada[2].key}</h2> */}
+          <h2>Turnaround: {logica?.tempoMedio}</h2>
+          <div>
+            {logica?.matriz.map((log, index) => (
+              <div className='grafico' key={index}>            
+                <h2>{logica?.processosExecutados[index]}</h2>
+                {log.map((estado, estadoIndex) => (
+                  <div key={estadoIndex}>
+                    <Quadrado color={estado}></Quadrado>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          <div className='grafico'>
+            <h2 style={{color: "#242424"}}>2</h2>
+            <div className='eixo-y'>
+              {logica?.eixox.map((log, index) => (
+                <h2>{index}</h2>
+              ))}
+            </div>            
+          </div>
         </section>
       )}
       {exibirGrafico && (

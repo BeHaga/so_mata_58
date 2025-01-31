@@ -1,6 +1,7 @@
 function Efifo (processos: {key: number, tempoDeChegada: number, tempoDeExecucao: number, deadline: number, paginas: number}[]) {
     const ordemChegada = []
     const processosIniciais = [...processos]
+    const processosExecutados = []
 
     while (processosIniciais.length > 0) {
         let chegouPrimeiro = processosIniciais[0];
@@ -31,32 +32,43 @@ function Efifo (processos: {key: number, tempoDeChegada: number, tempoDeExecucao
             if ((aux < tempoDecorrido) && (ordemChegada[i].tempoDeChegada <= aux)) {
                 aux += 1
                 tempoGasto += 1
-                estadosProcessos.push("esp")
+                // estadosProcessos.push("esp")
+                estadosProcessos.push("yellow")
             } else if ((aux == tempoDecorrido) && (ordemChegada[i].tempoDeChegada <= aux)) {
                 aux += 1
                 tempoGasto += 1
                 tempoExecutado += 1
                 tempoDecorrido += 1
-                estadosProcessos.push("exe")
+                // estadosProcessos.push("exe")
+                estadosProcessos.push("green")
             } else if (aux < tempoDecorrido) {
                 aux += 1
-                estadosProcessos.push("nda")
+                // estadosProcessos.push("nda")
+                estadosProcessos.push("gray")
             } else {             
                 aux += 1
                 tempoDecorrido += 1
-                estadosProcessos.push("nda")
+                // estadosProcessos.push("nda")
+                estadosProcessos.push("gray")
             }
         }
         matriz.push(estadosProcessos)
+        processosExecutados.push(ordemChegada[i].key)
     }
     let tempoMedio = (tempoGasto)/(ordemChegada.length)
 
     console.log(tempoMedio)
 
     for (let i = 0; i < matriz.length; i++) {
-        while(matriz[i].length < tempoDecorrido+1) {
+        while(matriz[i].length < tempoDecorrido) { //antes era tempoDecorrido + 1
             matriz[i].push("nda")
         }
+    }
+
+    const eixox = []
+
+    for (let i = 0; i < matriz[0].length; i++) {
+        eixox.push(i)
     }
 
     //legenda da matriz
@@ -70,8 +82,11 @@ function Efifo (processos: {key: number, tempoDeChegada: number, tempoDeExecucao
     //SJF quem tem menor tempo de execucao e chegou antes, ambos executam o processo todo para depois ir para outro
 
     return (
+        {
+            tempoMedio, processosExecutados, matriz, eixox
+        }
         // matriz
-        tempoMedio
+        // tempoMedio
     )
 }
 

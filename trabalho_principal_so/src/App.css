@@ -27,6 +27,36 @@
   background-color: red;
 }
 
+.graficoGantt {
+  padding-bottom: 1rem;
+}
+
+.grafico {
+  max-height: 1.6rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.grafico>h2 {
+  max-width: 1.6rem;
+  padding-right: 0.5rem;
+}
+
+.eixo-y {
+  /* max-width: 1.6rem; */  
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.eixo-y>h2 {
+  height: 1.6rem;
+  width: 1.6rem;
+}
+
 .processos {
   width: 100%;
   display: flex;

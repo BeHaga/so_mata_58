@@ -1,6 +1,6 @@
 function Esjf(processos: {key: number, tempoDeChegada: number, tempoDeExecucao: number, deadline: number, paginas: number}[]) {
     const processosIniciais = [...processos];
-    const processosExecutados = [];
+    let processosExecutados = [];
     const temposDeResposta = [];
     const matriz = [];
 
@@ -95,6 +95,14 @@ function Esjf(processos: {key: number, tempoDeChegada: number, tempoDeExecucao: 
     for (let i = 0; i < matriz[0].length; i++) {
         eixox.push(i)
     }
+    
+    const processosExecutados2 = [];
+
+    for (let i=0; i < processosExecutados.length; i++) {
+        processosExecutados2.push(processosExecutados[i].key)
+    }
+
+    processosExecutados = processosExecutados2
 
     return {
         tempoMedio, processosExecutados, matriz, eixox
@@ -102,6 +110,7 @@ function Esjf(processos: {key: number, tempoDeChegada: number, tempoDeExecucao: 
 }
 
 // Teste com os dados fornecidos
+// tempoMedio = 18
 const processos1 = [
     { key: 1, tempoDeChegada: 0, tempoDeExecucao: 14, deadline: 0, paginas: 1 },
     { key: 2, tempoDeChegada: 2, tempoDeExecucao: 4, deadline: 0, paginas: 1 },
@@ -109,6 +118,7 @@ const processos1 = [
     { key: 4, tempoDeChegada: 6, tempoDeExecucao: 6, deadline: 0, paginas: 1 },
     { key: 5, tempoDeChegada: 8, tempoDeExecucao: 8, deadline: 0, paginas: 1 }
 ];
+// tempoMedio = 13.6
 const processos2 = [
     { key: 1, tempoDeChegada: 0, tempoDeExecucao: 5, deadline: 0, paginas: 1 },
     { key: 2, tempoDeChegada: 2, tempoDeExecucao: 9, deadline: 0, paginas: 1 },
@@ -116,7 +126,7 @@ const processos2 = [
     { key: 4, tempoDeChegada: 6, tempoDeExecucao: 7, deadline: 0, paginas: 1 },
     { key: 5, tempoDeChegada: 8, tempoDeExecucao: 12, deadline: 0, paginas: 1 }
 ];
-
+// tempoMedio = 8.8
 const processos3 = [
     { key: 1, tempoDeChegada: 0, tempoDeExecucao: 5, deadline: 0, paginas: 1 },
     { key: 2, tempoDeChegada: 2, tempoDeExecucao: 3, deadline: 0, paginas: 1 },

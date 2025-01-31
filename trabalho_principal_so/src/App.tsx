@@ -5,8 +5,9 @@ import './App.css'
 
 import Processos from './components/processos/processos.tsx'
 import Escolhas from './components/escolhas/escolhas.tsx'
-import Efifo from './algoritmos/Efifo.tsx'
 import Quadrado from './components/quadrado/quadrado.tsx'
+import Efifo from './algoritmos/Efifo.tsx'
+import Esjf from './algoritmos/Esjf.tsx'
 
 // interface Processo {
 //   id: string;
@@ -22,6 +23,7 @@ function App() {
   const [processos, setProcessos] = useState<{key: number, tempoDeChegada: number, tempoDeExecucao: number, deadline: number, paginas: number}[]>([{key: 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1}]); {/*key 1 pois precisa de pelo menos um processo*/}
   const [exibirGrafico, setExibirGrafico] = useState(false);
   const [logica, setLogica] = useState<{tempoMedio: number, processosExecutados: number[], matriz: string[][], eixox: number[]}>()
+  const [escalonadorSelecionado, setEscalonadorSelecionado] = useState('FIFO');
 
   const criarProcesso = () => {
     // setProcessos(true);
@@ -73,8 +75,11 @@ function App() {
     if (escolhas.escalonamento === 'FIFO') {
       const escalonador = Efifo(processos);
       setLogica(escalonador)
-    } else if (escolhas.escalonamento === 'SJF') {
-
+      setEscalonadorSelecionado('FIFO')
+    } else if (escolhas.escalonamento === 'SJF') {      
+      const escalonador = Esjf(processos);
+      setLogica(escalonador)      
+      setEscalonadorSelecionado('SJF')
     } else if (escolhas.escalonamento === 'RR') {
 
     } else if (escolhas.escalonamento === 'EDF') {
@@ -93,9 +98,8 @@ function App() {
         onUpdate={(updatedValues) => atualizarEscolha(updatedValues)}
       />
       <hr />
-      <h2>Escalonamento selecionado: {escolhas.escalonamento}</h2>
-      <h2>Paginação selecionada: {escolhas.paginacao}</h2>
-      {/* <h2>Tempo de chegada do 1° processo: {processos[0].tempoDeChegada}</h2> */}
+      {/* <h2>Escalonamento selecionado: {escolhas.escalonamento}</h2> */}
+      {/* <h2>Paginação selecionada: {escolhas.paginacao}</h2> */}
       <div className='botoes'>
         {!exibirGrafico && (<button className='addProcessos' onClick={criarProcesso}>Adicionar processo</button>)}        
         <button className='botaoExecutar' onClick={executar}>Executar</button>
@@ -104,8 +108,8 @@ function App() {
       <hr />
       {exibirGrafico && (
         <section className='graficoGantt'>
-          <h2>Gráfico de Gantt</h2>
-          <h2>Turnaround: {logica?.tempoMedio}</h2>
+          <h2>Gráfico de Gantt do escalonador {escalonadorSelecionado}</h2>
+          <h2>Turnaround do escalonador {escalonadorSelecionado}: {logica?.tempoMedio}</h2>
           <div>
             {logica?.matriz.map((log, index) => (
               <div className='grafico' key={index}>            
@@ -119,7 +123,7 @@ function App() {
             ))}
           </div>
           <div className='grafico'>
-            <h2 style={{color: "#242424"}}>2</h2>
+            <h2 style={{color: "#242424"}}>..</h2>
             <div className='eixo-y'>
               {logica?.eixox.map((log, index) => (
                 <h2>{index}</h2>

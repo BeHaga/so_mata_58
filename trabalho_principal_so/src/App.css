@@ -10,7 +10,7 @@
   display: flex;
   justify-content: center;
   gap: 1rem;
-  padding-bottom: 1rem;
+  padding: 1rem 0;
 }
 
 .addProcessos {
@@ -32,7 +32,7 @@
 }
 
 .grafico {
-  max-height: 1.6rem;
+  max-height: 2rem;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -53,8 +53,8 @@
 }
 
 .eixo-y>h2 {
-  height: 1.6rem;
-  width: 1.6rem;
+  height: 2rem;
+  width: 2rem;
 }
 
 .processos {

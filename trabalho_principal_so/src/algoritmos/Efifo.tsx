@@ -4,7 +4,6 @@ function Efifo (processos: {key: number, tempoDeChegada: number, tempoDeExecucao
     const processosExecutados = []
     const matriz = []
 
-
     // tempoDecorrido = eixo x do gráfico
     // tempoExecutado = tempoDeExecucao do processo a cada u.t.
 

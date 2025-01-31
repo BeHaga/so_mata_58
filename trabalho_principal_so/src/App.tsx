@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 import './App.css'
 
 import Processos from './components/processos/processos.tsx'
 import Escolhas from './components/escolhas/escolhas.tsx'
+import Efifo from './algoritmos/Efifo.tsx'
 
 // interface Processo {
 //   id: string;
@@ -19,6 +20,8 @@ function App() {
   const [escolhas, setEscolhas] = useState<{escalonamento: string, paginacao: string, quantum: number, sobrecarga: number}>({escalonamento: "FIFO", paginacao: "FIFO", quantum: 1, sobrecarga: 1});
   const [processos, setProcessos] = useState<{key: number, tempoDeChegada: number, tempoDeExecucao: number, deadline: number, paginas: number}[]>([{key: 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1}]); {/*key 1 pois precisa de pelo menos um processo*/}
   const [exibirGrafico, setExibirGrafico] = useState(false);
+  const [ordemChegada, setOrdemChegada] = useState<{key: number, tempoDeChegada: number, tempoDeExecucao: number, deadline: number, paginas: number}[]>([])
+  const [turnaround, setTurnaround] = useState(0)
 
   const criarProcesso = () => {
     // setProcessos(true);
@@ -58,13 +61,25 @@ function App() {
     // setEscolhas((escolhas) => ({ ...escolhas, ...updatedValues}))
   }
 
-  const executar = () => {
-    setExibirGrafico(true)
-  }
-
   const resetar = () => {
     setExibirGrafico(false)
     setProcessos([{key: 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1}])
+    setOrdemChegada([]);
+  }
+
+  const executar = () => {
+    if (escolhas.escalonamento === 'FIFO') {
+      const turnaround = Efifo(processos);
+      setTurnaround(turnaround)
+      // setOrdemChegada(turnaround);
+    } else if (escolhas.escalonamento === 'SJF') {
+
+    } else if (escolhas.escalonamento === 'RR') {
+
+    } else if (escolhas.escalonamento === 'EDF') {
+
+    }
+    setExibirGrafico(true)
   }
 
   return (
@@ -80,8 +95,8 @@ function App() {
       <h2>Escalonamento selecionado: {escolhas.escalonamento}</h2>
       <h2>Paginação selecionada: {escolhas.paginacao}</h2>
       <h2>Tempo de chegada do 1° processo: {processos[0].tempoDeChegada}</h2>
-      <div className='botoes'>        
-        <button className='addProcessos' onClick={criarProcesso}>Adicionar processo</button>
+      <div className='botoes'>
+        {!exibirGrafico && (<button className='addProcessos' onClick={criarProcesso}>Adicionar processo</button>)}        
         <button className='botaoExecutar' onClick={executar}>Executar</button>
         <button className='botaoResetarProcessos' onClick={resetar}>Resetar processos</button>
       </div>
@@ -89,6 +104,15 @@ function App() {
       {exibirGrafico && (
         <section>
           <h2>Gráfico de Gantt</h2>
+          {/* <canvas id="ganttChart" width={400} height={200}></canvas> */}
+          {/* console.log({ordemChegada[0].key})
+          {ordemChegada.map((processo, index) => (
+            <h2 key={index}>Processo {processo.key}</h2>
+          ))} */}
+          <h2>Turnaround: {turnaround}</h2>
+          {/* <h2>{ordemChegada[0].key}</h2>
+          <h2>{ordemChegada[1].key}</h2>
+          <h2>{ordemChegada[2].key}</h2> */}
         </section>
       )}
       {exibirGrafico && (

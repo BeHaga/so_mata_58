@@ -61,7 +61,8 @@ function Efifo (processos: {key: number, tempoDeChegada: number, tempoDeExecucao
 
     for (let i = 0; i < matriz.length; i++) {
         while(matriz[i].length < tempoDecorrido) { //antes era tempoDecorrido + 1
-            matriz[i].push("nda")
+            // matriz[i].push("nda")
+            matriz[i].push("gray")
         }
     }
 

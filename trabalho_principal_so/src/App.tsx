@@ -8,6 +8,7 @@ import Escolhas from './components/escolhas/escolhas.tsx'
 import Quadrado from './components/quadrado/quadrado.tsx'
 import Efifo from './algoritmos/Efifo.tsx'
 import Esjf from './algoritmos/Esjf.tsx'
+import Err from './algoritmos/Err.tsx'
 
 // interface Processo {
 //   id: string;
@@ -76,12 +77,14 @@ function App() {
       const escalonador = Efifo(processos);
       setLogica(escalonador)
       setEscalonadorSelecionado('FIFO')
-    } else if (escolhas.escalonamento === 'SJF') {      
+    } else if (escolhas.escalonamento === 'SJF') {
       const escalonador = Esjf(processos);
-      setLogica(escalonador)      
+      setLogica(escalonador)
       setEscalonadorSelecionado('SJF')
     } else if (escolhas.escalonamento === 'RR') {
-
+      const escalonador = Err(processos, escolhas.quantum, escolhas.sobrecarga);
+      setLogica(escalonador)
+      setEscalonadorSelecionado('RR')
     } else if (escolhas.escalonamento === 'EDF') {
 
     }
@@ -108,8 +111,8 @@ function App() {
       <hr />
       {exibirGrafico && (
         <section className='graficoGantt'>
-          <h2>Gráfico de Gantt do escalonador {escalonadorSelecionado}</h2>
-          <h2>Turnaround do escalonador {escalonadorSelecionado}: {logica?.tempoMedio}</h2>
+          <h2>Gráfico de Gantt do algoritmo {escalonadorSelecionado}</h2>
+          <h2>Turnaround do algoritmo {escalonadorSelecionado}: {logica?.tempoMedio}</h2>
           <div>
             {logica?.matriz.map((log, index) => (
               <div className='grafico' key={index}>            

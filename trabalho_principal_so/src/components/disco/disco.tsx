@@ -1,18 +1,19 @@
 import './disco.css';
 
-export default function Disco() {
+export default function Disco({ id }: { id: number}) {
     return (
-        <div className='paginacaoLinha'>
-        <div className='quadradoPaginacao'>-</div>
-        <div className='quadradoPaginacao'>-</div>
-        <div className='quadradoPaginacao'>-</div>
-        <div className='quadradoPaginacao'>-</div>
-        <div className='quadradoPaginacao'>-</div>
-        <div className='quadradoPaginacao'>-</div>
-        <div className='quadradoPaginacao'>-</div>
-        <div className='quadradoPaginacao'>-</div>
-        <div className='quadradoPaginacao'>-</div>
-        <div className='quadradoPaginacao'>-</div>
-        </div>
+        <div className='quadradoPaginacao'>{id}</div>
+        // <div className='paginacaoLinha'>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        // </div>
     )
 }

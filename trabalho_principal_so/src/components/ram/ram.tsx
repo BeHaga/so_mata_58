@@ -1,18 +1,19 @@
 import './ram.css';
 
-export default function Ram() {
+export default function Ram({ id }: { id: number}) {
     return (
-        <div className='paginacaoLinha'>
-            <div className='quadradoPaginacao'>-</div>
-            <div className='quadradoPaginacao'>-</div>
-            <div className='quadradoPaginacao'>-</div>
-            <div className='quadradoPaginacao'>-</div>
-            <div className='quadradoPaginacao'>-</div>
-            <div className='quadradoPaginacao'>-</div>
-            <div className='quadradoPaginacao'>-</div>
-            <div className='quadradoPaginacao'>-</div>
-            <div className='quadradoPaginacao'>-</div>
-            <div className='quadradoPaginacao'>-</div>
-        </div>        
+        <div className='quadradoPaginacao'>{id}</div>
+        // <div className='paginacaoLinha'>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        //     <div className='quadradoPaginacao'>-</div>
+        // </div>        
     )
 }

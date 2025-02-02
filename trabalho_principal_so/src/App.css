@@ -90,6 +90,12 @@
   font-size: 3rem;
 }
 
+.largura10 {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 27.5rem;  
+}
+
 /* .logo {
   height: 6em;
   padding: 1.5em;

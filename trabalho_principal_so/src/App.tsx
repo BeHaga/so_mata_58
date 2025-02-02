@@ -11,6 +11,7 @@ import Disco from './components/disco/disco.tsx'
 import Efifo from './algoritmos/Efifo.tsx'
 import Esjf from './algoritmos/Esjf.tsx'
 import Err from './algoritmos/Err.tsx'
+import Eedf from './algoritmos/Eedf.tsx'
 
 // interface Processo {
 //   id: string;
@@ -30,6 +31,7 @@ function App() {
   const [logica, setLogica] = useState<{tempoMedio: number, processosExecutados: number[], matriz: string[][], eixox: number[]}>()
   const [escalonadorSelecionado, setEscalonadorSelecionado] = useState('FIFO');
   const [delayTime, setDelayTime] = useState(500); //tempo sempre estará em ms
+  const [colunasVisiveis, setColunasVisiveis] = useState<number[]>([])
 
   const criarProcesso = () => {
     // setProcessos(true);
@@ -79,19 +81,25 @@ function App() {
 
   const executar = async () => {
     if (escolhas.escalonamento === 'FIFO') {
+      setColunasVisiveis([])
       const escalonador = Efifo(processos);
       setLogica(escalonador)
       setEscalonadorSelecionado('FIFO')
     } else if (escolhas.escalonamento === 'SJF') {
+      setColunasVisiveis([])
       const escalonador = Esjf(processos);
       setLogica(escalonador)
       setEscalonadorSelecionado('SJF')
     } else if (escolhas.escalonamento === 'RR') {
+      setColunasVisiveis([])
       const escalonador = Err(processos, escolhas.quantum, escolhas.sobrecarga);
       setLogica(escalonador)
       setEscalonadorSelecionado('RR')
     } else if (escolhas.escalonamento === 'EDF') {
-
+      // setColunasVisiveis([])
+      // const escalonador = Eedf(processos, escolhas.quantum, escolhas.sobrecarga);
+      // setLogica(escalonador)
+      // setEscalonadorSelecionado('EDF')      
     }
     await delay(escolhas.delay * 1000)
     setExibirGrafico(true)
@@ -112,6 +120,19 @@ function App() {
     }
     return enderecosDisco
   }
+
+  useEffect(() => {
+    if (!logica?.eixox || logica?.eixox.length === 0) return;
+
+    const mostrarColunasComDelay = async () => {
+      for (let i = 0; i < logica.eixox.length; i++) {        
+        await delay(escolhas.delay * 1000)
+        setColunasVisiveis((prev) => [...prev, i])
+      }
+    }
+
+    mostrarColunasComDelay();
+  }, [logica?.eixox, escolhas.delay])
 
   return (
     <>          
@@ -145,12 +166,14 @@ function App() {
 
                 {/*colunas dos quadrados e eixo-x*/}
                 {logica?.eixox.map((_, colunaIndex) => (
-                  <div className="colunaGrafico" key={colunaIndex}>
+                  colunasVisiveis.includes(colunaIndex) && (
+                    <div className="colunaGrafico" key={colunaIndex}>
                     {logica?.matriz.map((linha, linhaIndex) => (
                       <Quadrado key={linhaIndex} color={linha[colunaIndex]} />
                     ))}
                     <div>{logica?.eixox[colunaIndex]}</div>
                   </div>
+                  )                  
                 ))}
               </div>
             </div>

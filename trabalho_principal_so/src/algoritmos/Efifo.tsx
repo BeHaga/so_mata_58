@@ -1,8 +1,8 @@
 function Efifo (processos: {key: number, tempoDeChegada: number, tempoDeExecucao: number, deadline: number, paginas: number}[]) {
     const ordemChegada = [...processos]
     ordemChegada.sort((a, b) => a.tempoDeChegada - b.tempoDeChegada);
-    const processosExecutados = []
-    const matriz = []
+    let processosExecutados = []
+    let matriz = []
 
     // tempoDecorrido = eixo x do gráfico
     // tempoExecutado = tempoDeExecucao do processo a cada u.t.
@@ -56,6 +56,17 @@ function Efifo (processos: {key: number, tempoDeChegada: number, tempoDeExecucao
     for (let i = 0; i < matriz[0].length; i++) {
         eixox.push(i)
     }
+
+    const processosExecutados2 = []
+    const matriz2 = []
+    for (let i = 1; i < processosExecutados.length+1; i++) {
+        let achei = processosExecutados.indexOf(i)
+        processosExecutados2.push(processosExecutados[achei])
+        matriz2.push(matriz[achei])
+    }
+
+    processosExecutados = processosExecutados2
+    matriz = matriz2
 
     //legenda da matriz
     //esp = esperando

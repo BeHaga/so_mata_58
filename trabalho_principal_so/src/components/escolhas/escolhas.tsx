@@ -6,15 +6,17 @@ interface EscolhaProps {
     escalonamento: string;
     paginacao: string;
     quantum: number;
-    sobrecarga: number;    
+    sobrecarga: number; 
+    delay: number;   
     onUpdate: (updateValues: Partial<EscolhaProps>) => void;
 }
 
-export default function Escolhas({escalonamento, paginacao, quantum, sobrecarga, onUpdate} : EscolhaProps) {    
+export default function Escolhas({escalonamento, paginacao, quantum, sobrecarga, delay, onUpdate} : EscolhaProps) {    
     const [botaoSelecionadoEscalonamento, setBotaoSelecionadoEscalonamento] = useState<string>(escalonamento);
     const [botaoSelecionadoPaginacao, setBotaoSelecionadoPaginacao] = useState<string>(paginacao);
     const [valorQuantum, setValorQuantum] = useState(quantum);
     const [valorSobrecarga, setValorSobrecarga] = useState(sobrecarga);
+    const [valorDelay, setValorDelay] = useState(delay);
 
     const apertarEscalonamento = (button: string) => {
         setBotaoSelecionadoEscalonamento(button);
@@ -35,6 +37,7 @@ export default function Escolhas({escalonamento, paginacao, quantum, sobrecarga,
     const handleChange = (key: string, value: number) => {
         if (key === "quantum") setValorQuantum(value);
         if (key === "sobrecarga") setValorSobrecarga(value);
+        if (key === "delay") setValorDelay(value);
 
         onUpdate({
             [key]: value,
@@ -98,6 +101,30 @@ export default function Escolhas({escalonamento, paginacao, quantum, sobrecarga,
                                 input.value = "1"
                             }
                             handleChange("sobrecarga", Number(input.value))}
+                        }
+                    />
+                </div>
+                <div className='definicao'>
+                    <h3 className='nomeAtributo'>Delay em s:</h3>
+                    <input 
+                        className='inputAtributo' 
+                        type="number" 
+                        // name="Quantum" 
+                        // id="" 
+                        placeholder="Delay"
+                        step="0.1" 
+                        min="0.5"
+                        max="3"
+                        // defaultValue={1}
+                        value={valorDelay}
+                        onChange={(e) => {
+                            const input = e.target;
+                            if (Number (input.value) > 3) {
+                                input.value = "3";
+                            } else if (Number(input.value) < 0.5) {
+                                input.value = "0.5"
+                            }
+                            handleChange("delay", Number(input.value))}
                         }
                     />
                 </div>

@@ -17,16 +17,19 @@ import Err from './algoritmos/Err.tsx'
 //   component: JSX.Element;
 // }
 
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 function App() {
   // const [count, setCount] = useState(0);
   
   // const [processos, setProcessos] = useState<Processo[]>([]);
   // const [escolhas, setEscolhas] = useState<{escalonamento: string, paginacao: string, quantum: number, sobrecarga: number}[]>([{escalonamento: "FIFO", paginacao: "FIFO", quantum: 1, sobrecarga: 1}]);
-  const [escolhas, setEscolhas] = useState<{escalonamento: string, paginacao: string, quantum: number, sobrecarga: number}>({escalonamento: "FIFO", paginacao: "FIFO", quantum: 1, sobrecarga: 1});
+  const [escolhas, setEscolhas] = useState<{escalonamento: string, paginacao: string, quantum: number, sobrecarga: number, delay: number}>({escalonamento: "FIFO", paginacao: "FIFO", quantum: 1, sobrecarga: 1, delay: 0.5});
   const [processos, setProcessos] = useState<{key: number, tempoDeChegada: number, tempoDeExecucao: number, deadline: number, paginas: number}[]>([{key: 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1}]); {/*key 1 pois precisa de pelo menos um processo*/}
   const [exibirGrafico, setExibirGrafico] = useState(false);
   const [logica, setLogica] = useState<{tempoMedio: number, processosExecutados: number[], matriz: string[][], eixox: number[]}>()
   const [escalonadorSelecionado, setEscalonadorSelecionado] = useState('FIFO');
+  const [delayTime, setDelayTime] = useState(500); //tempo sempre estará em ms
 
   const criarProcesso = () => {
     // setProcessos(true);
@@ -74,7 +77,7 @@ function App() {
     // setOrdemChegada([]);
   }
 
-  const executar = () => {
+  const executar = async () => {
     if (escolhas.escalonamento === 'FIFO') {
       const escalonador = Efifo(processos);
       setLogica(escalonador)
@@ -90,6 +93,7 @@ function App() {
     } else if (escolhas.escalonamento === 'EDF') {
 
     }
+    await delay(escolhas.delay * 1000)
     setExibirGrafico(true)
   }
 
@@ -116,11 +120,10 @@ function App() {
         paginacao={escolhas.paginacao}
         quantum={escolhas.quantum}
         sobrecarga={escolhas.sobrecarga}
+        delay={escolhas.delay}
         onUpdate={(updatedValues) => atualizarEscolha(updatedValues)}
       />
       <hr />
-      {/* <h2>Escalonamento selecionado: {escolhas.escalonamento}</h2> */}
-      {/* <h2>Paginação selecionada: {escolhas.paginacao}</h2> */}
       <div className='botoes'>
         {!exibirGrafico && (<button className='addProcessos' onClick={criarProcesso}>Adicionar processo</button>)}        
         <button className='botaoExecutar' onClick={executar}>Executar</button>
@@ -131,28 +134,26 @@ function App() {
         <section className='graficoGantt'>
           <h2>Gráfico de Gantt do algoritmo {escalonadorSelecionado}</h2>
           <h2>Turnaround do algoritmo {escalonadorSelecionado}: {logica?.tempoMedio}</h2>
-          <section className='areaGrafico'>
             <div>
-              {logica?.matriz.map((log, index) => (
-                <div className='grafico' key={index}>            
-                  <h2>{logica?.processosExecutados[index]}</h2>
-                  {log.map((estado, estadoIndex) => (
-                    <div key={estadoIndex}>
-                      <Quadrado color={estado}></Quadrado>
-                    </div>
+              <div className="container">
+                {/*números dos processos em ordem crescente*/}
+                <div className="colunaGrafico">
+                  {logica?.processosExecutados.map((processo, index) => (
+                    <div key={index}>{processo}</div>
                   ))}
                 </div>
-              ))}
-            </div>
-            <div className='grafico'>
-              <h2 style={{color: "#242424"}}>..</h2>
-              <div className='eixo-y'>
-                {logica?.eixox.map((log, index) => (
-                  <h2>{index}</h2>
+
+                {/*colunas dos quadrados e eixo-x*/}
+                {logica?.eixox.map((_, colunaIndex) => (
+                  <div className="colunaGrafico" key={colunaIndex}>
+                    {logica?.matriz.map((linha, linhaIndex) => (
+                      <Quadrado key={linhaIndex} color={linha[colunaIndex]} />
+                    ))}
+                    <div>{logica?.eixox[colunaIndex]}</div>
+                  </div>
                 ))}
-              </div>            
+              </div>
             </div>
-          </section>          
         </section>
       )}
       {exibirGrafico && (

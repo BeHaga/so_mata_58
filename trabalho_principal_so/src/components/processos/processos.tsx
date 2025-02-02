@@ -46,7 +46,13 @@ export default function Processos({ numero, onDelete, onUpdate, tempoDeChegada, 
                         min="0" 
                         // defaultValue={0} 
                         value={chegada}
-                        onChange={(e) => handleChange("tempoDeChegada", Number(e.target.value))}
+                        onChange={(e) => {
+                            const input = e.target;
+                            if (Number(input.value) < 0) {
+                                input.value = "0"
+                            }
+                            handleChange("tempoDeChegada", Number(input.value))}
+                        }
                     />
                 </div>
                 <div className='coluna'>
@@ -59,8 +65,14 @@ export default function Processos({ numero, onDelete, onUpdate, tempoDeChegada, 
                         placeholder="Tempo de Execução" 
                         min="1" 
                         // defaultValue={1} 
-                        value={execucao}                    
-                        onChange={(e) => handleChange("tempoDeExecucao", Number(e.target.value))}
+                        value={execucao}
+                        onChange={(e) => {
+                            const input = e.target;
+                            if (Number(input.value) < 1) {
+                                input.value = "1"
+                            }
+                            handleChange("tempoDeExecucao", Number(input.value))}
+                        }
                     />
                 </div>
             </div>
@@ -76,7 +88,13 @@ export default function Processos({ numero, onDelete, onUpdate, tempoDeChegada, 
                         min="0" 
                         // defaultValue={0} 
                         value={valorDeadline}
-                        onChange={(e) => handleChange("deadline", Number(e.target.value))}
+                        onChange={(e) => {
+                            const input = e.target;
+                            if (Number(input.value) < 0) {
+                                input.value = "0"
+                            }
+                            handleChange("deadline", Number(input.value))}
+                        }
                     />
                 </div>
                 <div className='coluna'>
@@ -88,9 +106,18 @@ export default function Processos({ numero, onDelete, onUpdate, tempoDeChegada, 
                         // id="" 
                         placeholder="paginas" 
                         min="1" 
+                        max="10"
                         // defaultValue={1} 
                         value={qtdPaginas}
-                        onChange={(e) => handleChange("paginas", Number(e.target.value))}
+                        onChange={(e) => {
+                            const input = e.target;
+                            if (Number (input.value) > 10) {
+                                input.value = "10";
+                            } else if (Number(input.value) < 1) {
+                                input.value = "1"
+                            }
+                            handleChange("paginas", Number(input.value))}
+                        }
                     />
                 </div>
             </div>   

@@ -1,0 +1,30 @@
+* {
+    font-size: 10px;
+    font-family: 'DM Sans';
+    font-weight: 700;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.paginacaoLinha {
+    display: flex;
+}
+
+.quadradoPaginacao {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    height: 2.5rem;
+    width: 2.5rem;
+    background: #fff;
+    border-color: red;
+    border: solid 0.1rem;
+    font-size: 2rem;
+    color: #000;
+}

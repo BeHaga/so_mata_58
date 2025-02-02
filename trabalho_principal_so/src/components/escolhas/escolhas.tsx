@@ -72,8 +72,13 @@ export default function Escolhas({escalonamento, paginacao, quantum, sobrecarga,
                         min="1" 
                         // defaultValue={1}
                         value={valorQuantum}
-                        // onChange={(e) => setValorQuantum(Number(e.target.value))}                        
-                        onChange={(e) => handleChange("quantum", Number(e.target.value))}
+                        onChange={(e) => {
+                            const input = e.target;
+                            if (Number(input.value) < 1) {
+                                input.value = "1"
+                            }
+                            handleChange("quantum", Number(input.value))}
+                        }
                     />
                 </div>
                 <div className='definicao'>
@@ -87,8 +92,13 @@ export default function Escolhas({escalonamento, paginacao, quantum, sobrecarga,
                         min="1" 
                         // defaultValue={1}
                         value={valorSobrecarga}
-                        // onChange={(e) => setValorSobrecarga(Number(e.target.value))} 
-                        onChange={(e) => handleChange("sobrecarga", Number(e.target.value))}
+                        onChange={(e) => {
+                            const input = e.target;
+                            if (Number(input.value) < 1) {
+                                input.value = "1"
+                            }
+                            handleChange("sobrecarga", Number(input.value))}
+                        }
                     />
                 </div>
             </div>

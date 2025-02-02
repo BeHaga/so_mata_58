@@ -6,6 +6,8 @@ import './App.css'
 import Processos from './components/processos/processos.tsx'
 import Escolhas from './components/escolhas/escolhas.tsx'
 import Quadrado from './components/quadrado/quadrado.tsx'
+import Ram from './components/ram/ram.tsx'
+import Disco from './components/disco/disco.tsx'
 import Efifo from './algoritmos/Efifo.tsx'
 import Esjf from './algoritmos/Esjf.tsx'
 import Err from './algoritmos/Err.tsx'
@@ -47,7 +49,7 @@ function App() {
         }));
         return processosKeysAtualizadas;
       })
-    }    
+    }   
   };
 
   const atualizarProcesso = (key: number, updatedValues: Partial<typeof processos[0]>) => {
@@ -113,26 +115,28 @@ function App() {
         <section className='graficoGantt'>
           <h2>Gráfico de Gantt do algoritmo {escalonadorSelecionado}</h2>
           <h2>Turnaround do algoritmo {escalonadorSelecionado}: {logica?.tempoMedio}</h2>
-          <div>
-            {logica?.matriz.map((log, index) => (
-              <div className='grafico' key={index}>            
-                <h2>{logica?.processosExecutados[index]}</h2>
-                {log.map((estado, estadoIndex) => (
-                  <div key={estadoIndex}>
-                    <Quadrado color={estado}></Quadrado>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-          <div className='grafico'>
-            <h2 style={{color: "#242424"}}>..</h2>
-            <div className='eixo-y'>
-              {logica?.eixox.map((log, index) => (
-                <h2>{index}</h2>
+          <section className='areaGrafico'>
+            <div>
+              {logica?.matriz.map((log, index) => (
+                <div className='grafico' key={index}>            
+                  <h2>{logica?.processosExecutados[index]}</h2>
+                  {log.map((estado, estadoIndex) => (
+                    <div key={estadoIndex}>
+                      <Quadrado color={estado}></Quadrado>
+                    </div>
+                  ))}
+                </div>
               ))}
-            </div>            
-          </div>
+            </div>
+            <div className='grafico'>
+              <h2 style={{color: "#242424"}}>..</h2>
+              <div className='eixo-y'>
+                {logica?.eixox.map((log, index) => (
+                  <h2>{index}</h2>
+                ))}
+              </div>            
+            </div>
+          </section>          
         </section>
       )}
       {exibirGrafico && (
@@ -155,6 +159,34 @@ function App() {
         ))}
       </div>      
       <hr />
+      <div className='paginacao'>
+        <section>
+          <h2>RAM</h2>
+          <Ram/>
+          <Ram/>
+          <Ram/>
+          <Ram/>
+          <Ram/>
+        </section>
+        <section>
+          <h2>DISCO</h2>
+          <Disco/>
+          <Disco/>
+          <Disco/>
+          <Disco/>
+          <Disco/>
+          <Disco/>
+          <Disco/>
+          <Disco/>
+          <Disco/>
+          <Disco/>
+          <Disco/>
+          <Disco/>
+          <Disco/>
+          <Disco/>
+          <Disco/>
+        </section>
+      </div>
       {/* <Processos></Processos> */}
 
 

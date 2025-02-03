@@ -32,13 +32,11 @@ function App() {
   const [escalonadorSelecionado, setEscalonadorSelecionado] = useState('FIFO');
   const [delayTime, setDelayTime] = useState(500); //tempo sempre estará em ms
   const [colunasVisiveis, setColunasVisiveis] = useState<number[]>([])
+  const [tamanhoDisco, setTamanhoDisco] = useState(0);
+  const [enderecosDisco, setEnderecosDisco] = useState<JSX.Element[]>([])
+  const [enderecosRam, setEnderecosRam] = useState<JSX.Element[]>([])
 
   const criarProcesso = () => {
-    // setProcessos(true);
-    // setProcessos((prev) => [...prev, <Processos key={prev.length} />]);
-    // const novoProcesso = {key: processos[-1].key + 1};
-    // const inicial = processos[0].key;
-    // const novoProcesso = {key: inicial + 1};
     const novoProcesso = {key: processos.length + 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1};
     setProcessos((prev) => [...prev, novoProcesso]);
   };
@@ -105,21 +103,120 @@ function App() {
     setExibirGrafico(true)
   }
 
-  const criarRam = () => {
-    const enderecosRam = []
-    for (let i = 0; i < 50; i++) {
-      enderecosRam.push(<Ram id={i} />)
+  // const enderecosDisco: JSX.Element[] = []
+  // let tamanhoDisco = 0
+  
+  const criarDisco = () => {
+    console.log("Criando o disco")
+
+    let novosEnderecosDisco: JSX.Element[] = []
+    let aux = 0;
+
+    for (let j = 0; j < processos.length; j++) {
+      for (let k = 0; k < processos[j].paginas; k++) {
+        novosEnderecosDisco.push(<Disco id={aux} nProcesso={j+1} />)
+        aux += 1
+      }
     }
-    return enderecosRam
+
+    for (let i = 0; i < novosEnderecosDisco.length; i++) {
+      console.log("Na partição :" + i + " está página do processo: " + novosEnderecosDisco[i].props.nProcesso)
+    }
+
+    console.log("tamanho do disco antes do preenchimento: " + novosEnderecosDisco.length)
+
+    for (let i = novosEnderecosDisco.length; i < 150; i++) {
+      novosEnderecosDisco.push(<Disco id={i} nProcesso={0} />)
+    }
+    console.log("tamanho final do disco é: " + novosEnderecosDisco.length)
+    setEnderecosDisco(novosEnderecosDisco)
+    // setTamanhoDisco(novosEnderecosDisco.length)
+    return novosEnderecosDisco
   }
 
-  const criarDisco = () => {
-    const enderecosDisco = []
-    for (let i = 0; i < 150; i++) {
-      enderecosDisco.push(<Disco id={i} />)
+  useEffect(() => {
+    criarDisco()
+    criarRam()
+  }, [exibirGrafico, executar])
+  // }, [exibirGrafico])
+
+  const criarRam = () => {
+    console.log("Criando a RAM")
+
+    let novosEnderecosRam: JSX.Element[] = []
+
+    if (novosEnderecosRam.length == 0) {
+      for (let i = 0; i < 50; i++) {
+        novosEnderecosRam.push(<Ram id={i} nProcesso={0} />)
+      }
     }
-    return enderecosDisco
-  }
+    console.log("RAM foi criada")
+    setEnderecosRam(novosEnderecosRam)
+    return novosEnderecosRam
+  }  
+
+  // const enderecosRam: JSX.Element[] = []
+  // if (enderecosRam.length == 0) {
+  //   for (let i = 0; i < 50; i++) {
+  //     enderecosRam.push(<Ram id={i} nProcesso={0} />)
+  //   }
+  // }
+  // const criarRam = () => {
+  //   console.log("RAM foi criada")
+  //   return enderecosRam
+  // }
+
+  let ultimaColuna = 0
+
+  const verificarRam = (colunaIndex: number) => {    
+    if (!logica?.eixox || logica?.eixox.length === 0) return;
+
+    console.log("Estamos verificando sua RAM")
+    console.log("valor da ultima coluna:" + ultimaColuna)
+    console.log("valor da coluna index:" + colunaIndex)
+    console.log("lembrando que ultimaColuna tem que ser < colunaIndex")
+    
+    // // for (let i = 0; i < logica?.eixox.length; i++) {
+    // for (let i = ultimaColuna; i < colunaIndex+1; i++) {
+    //   console.log("estou na unidade de tempo" + i)
+    //   //percorre todas as u.t.
+    //   for (let j = 0; j < processos.length; j++) {
+    //     //percorre todos os processos
+    //     if (logica?.matriz[j][i] == "green") {
+    //       //processo está executando
+    //       console.log("quem deu green dessa vez foi o processo:" + (j+1))
+    //       // tamanhoDisco = enderecosDisco.length
+    //       let tamanhoDisco = enderecosDisco.length
+    //       console.log("tamanho do disco é: " + tamanhoDisco)
+    //       //esse for abaixo tá dando loop se for diferente de 0
+    //       for (let k = 0; k < tamanhoDisco; k++) {
+    //         //percorre os slots do disco
+    //         // console.log(enderecosDisco[k].props.nProcesso)
+    //         console.log(enderecosDisco[0])
+    //         // console.log("o valor de k é:" + k)
+    //         // console.log("o valor no slot k é:" + enderecosDisco[1].props.nProcesso)
+    //         if ((enderecosDisco[k].props.nProcesso) == (j+1)) {
+    //           //achamos o processo que está executando dentro do disco
+    //           console.log("o green está armazenado no slot: " + k + " do disco")
+    //           for (let l = 0; l < 50; l++) {
+    //             if (enderecosRam[l].props.nProcesso == 0) {
+    //               //esta livre
+    //               enderecosRam.splice(l, 0, (<Ram id={l} nProcesso={j+1} />)) //adiciona
+    //               enderecosRam.splice(l+1, 1) //remove
+    //               enderecosDisco.splice(k, 0, (<Disco id={k} nProcesso={0} />)) //adiciona
+    //               enderecosDisco.splice(k+1, 1) //remove
+    //               console.log("Estamos tentando manipular sua RAM")
+    //               break
+    //             }
+    //           }
+    //         }
+
+    //       }
+    //     }
+    //   }
+    // }
+    ultimaColuna += 1
+  } 
 
   useEffect(() => {
     if (!logica?.eixox || logica?.eixox.length === 0) return;
@@ -132,6 +229,12 @@ function App() {
     }
 
     mostrarColunasComDelay();
+  }, [logica?.eixox, escolhas.delay])  
+
+  useEffect(() => {
+    {exibirGrafico && logica?.eixox.map((_, colunaIndex) => (
+      colunasVisiveis.includes(colunaIndex) && verificarRam(colunaIndex)
+  ))}
   }, [logica?.eixox, escolhas.delay])
 
   return (
@@ -183,8 +286,6 @@ function App() {
         <hr />
       )}
       <div className='processos'>
-        {/* {processo && <Processos />} */}
-        {/* {processos} */}
         {processos.map((processo) => (
           <Processos 
             key={processo.key}
@@ -199,20 +300,35 @@ function App() {
         ))}
       </div>      
       <hr />
-      <div className='paginacao'>
-        <section>
-          <h2>RAM</h2>
-          <div className='largura10'>
-            {criarRam()}
-          </div>
-        </section>
-        <section>
-          <h2>DISCO</h2>
-          <div className='largura10'>
-            {criarDisco()}
-          </div>
-        </section>
-      </div>
+      {exibirGrafico && (
+        <div className='paginacao'>
+          <section>
+            <h2>DISCO</h2>
+            <div className='largura10'>
+              {/* {criarDisco()} */}
+              {enderecosDisco.map((endereco) => (
+                endereco
+              ))}
+            </div>
+          </section>
+          <section>
+            <h2>RAM</h2>
+            <div className='largura10'>
+              {/* {criarRam()} */}
+              {enderecosRam.map((endereco) => (
+                endereco
+              ))}
+            </div>
+            {/* {logica?.eixox.map((_, colunaIndex) => (
+                colunasVisiveis.includes(colunaIndex) && (                  
+                  <div className='largura10' key={colunaIndex}>
+                    {verificarRam(colunaIndex)}
+                  </div>
+                )                
+            ))} */}
+          </section>
+        </div>
+      )}
     </>
   )
 }

@@ -94,10 +94,10 @@ function App() {
       setLogica(escalonador)
       setEscalonadorSelecionado('RR')
     } else if (escolhas.escalonamento === 'EDF') {
-      // setColunasVisiveis([])
-      // const escalonador = Eedf(processos, escolhas.quantum, escolhas.sobrecarga);
-      // setLogica(escalonador)
-      // setEscalonadorSelecionado('EDF')      
+      setColunasVisiveis([])
+      const escalonador = Eedf(processos, escolhas.quantum, escolhas.sobrecarga);
+      setLogica(escalonador)
+      setEscalonadorSelecionado('EDF')      
     }
     await delay(escolhas.delay * 1000)
     setExibirGrafico(true)

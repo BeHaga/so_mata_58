@@ -27,7 +27,7 @@ function App() {
   // const [escolhas, setEscolhas] = useState<{escalonamento: string, paginacao: string, quantum: number, sobrecarga: number}[]>([{escalonamento: "FIFO", paginacao: "FIFO", quantum: 1, sobrecarga: 1}]);
   const [escolhas, setEscolhas] = useState<{escalonamento: string, paginacao: string, quantum: number, sobrecarga: number, delay: number}>({escalonamento: "FIFO", paginacao: "FIFO", quantum: 1, sobrecarga: 1, delay: 0.5});
   const [processos, setProcessos] = useState<{key: number, tempoDeChegada: number, tempoDeExecucao: number, deadline: number, paginas: number}[]>([{key: 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1}]); {/*key 1 pois precisa de pelo menos um processo*/}
-  const [exibirGrafico, setExibirGrafico] = useState(false);
+  const [exibirGrafico, setExibirGrafico] = useState<boolean>(false);
   const [logica, setLogica] = useState<{tempoMedio: number, processosExecutados: number[], matriz: string[][], eixox: number[]}>()
   const [escalonadorSelecionado, setEscalonadorSelecionado] = useState('FIFO');
   const [delayTime, setDelayTime] = useState(500); //tempo sempre estará em ms
@@ -35,6 +35,7 @@ function App() {
   const [tamanhoDisco, setTamanhoDisco] = useState(0);
   const [enderecosDisco, setEnderecosDisco] = useState<JSX.Element[]>([])
   const [enderecosRam, setEnderecosRam] = useState<JSX.Element[]>([])
+  const [verifiqueiRam, setVerifiqueiRam] = useState<number>(-1);
 
   const criarProcesso = () => {
     const novoProcesso = {key: processos.length + 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1};
@@ -120,7 +121,7 @@ function App() {
     }
 
     for (let i = 0; i < novosEnderecosDisco.length; i++) {
-      console.log("Na partição :" + i + " está página do processo: " + novosEnderecosDisco[i].props.nProcesso)
+      console.log("Na partição " + i + " está uma página do processo: " + novosEnderecosDisco[i].props.nProcesso)
     }
 
     console.log("tamanho do disco antes do preenchimento: " + novosEnderecosDisco.length)
@@ -134,10 +135,13 @@ function App() {
     return novosEnderecosDisco
   }
 
-  useEffect(() => {
-    criarDisco()
-    criarRam()
-  }, [exibirGrafico, executar])
+  //comentei esse, pois colocar a criação dentro de mostrarColunasComDelay(), faz com que zere a RAM e disco caso execute novamente
+  // useEffect(() => {
+  //   if (!exibirGrafico) { //coloquei esse if para não criar disco e ram ao predefinir o valor de exibirGrafico no useState
+  //     return;
+  //   }
+  //   criarDisco()
+  //   criarRam()
   // }, [exibirGrafico])
 
   const criarRam = () => {
@@ -166,76 +170,92 @@ function App() {
   //   return enderecosRam
   // }
 
-  let ultimaColuna = 0
-
   const verificarRam = (colunaIndex: number) => {    
     if (!logica?.eixox || logica?.eixox.length === 0) return;
 
-    console.log("Estamos verificando sua RAM")
-    console.log("valor da ultima coluna:" + ultimaColuna)
-    console.log("valor da coluna index:" + colunaIndex)
-    console.log("lembrando que ultimaColuna tem que ser < colunaIndex")
-    
-    // // for (let i = 0; i < logica?.eixox.length; i++) {
-    // for (let i = ultimaColuna; i < colunaIndex+1; i++) {
-    //   console.log("estou na unidade de tempo" + i)
-    //   //percorre todas as u.t.
-    //   for (let j = 0; j < processos.length; j++) {
-    //     //percorre todos os processos
-    //     if (logica?.matriz[j][i] == "green") {
-    //       //processo está executando
-    //       console.log("quem deu green dessa vez foi o processo:" + (j+1))
-    //       // tamanhoDisco = enderecosDisco.length
-    //       let tamanhoDisco = enderecosDisco.length
-    //       console.log("tamanho do disco é: " + tamanhoDisco)
-    //       //esse for abaixo tá dando loop se for diferente de 0
-    //       for (let k = 0; k < tamanhoDisco; k++) {
-    //         //percorre os slots do disco
-    //         // console.log(enderecosDisco[k].props.nProcesso)
-    //         console.log(enderecosDisco[0])
-    //         // console.log("o valor de k é:" + k)
-    //         // console.log("o valor no slot k é:" + enderecosDisco[1].props.nProcesso)
-    //         if ((enderecosDisco[k].props.nProcesso) == (j+1)) {
-    //           //achamos o processo que está executando dentro do disco
-    //           console.log("o green está armazenado no slot: " + k + " do disco")
-    //           for (let l = 0; l < 50; l++) {
-    //             if (enderecosRam[l].props.nProcesso == 0) {
-    //               //esta livre
-    //               enderecosRam.splice(l, 0, (<Ram id={l} nProcesso={j+1} />)) //adiciona
-    //               enderecosRam.splice(l+1, 1) //remove
-    //               enderecosDisco.splice(k, 0, (<Disco id={k} nProcesso={0} />)) //adiciona
-    //               enderecosDisco.splice(k+1, 1) //remove
-    //               console.log("Estamos tentando manipular sua RAM")
-    //               break
-    //             }
-    //           }
-    //         }
+    console.log("verifiquei RAM pela ",colunaIndex + 1, "ª vez")
 
-    //       }
-    //     }
-    //   }
-    // }
-    ultimaColuna += 1
+    let ultimaColuna = colunaIndex
+
+    // console.log("Estamos verificando sua RAM")
+    // console.log("valor da ultima coluna:" + ultimaColuna)
+    // console.log("valor da coluna index:" + colunaIndex)
+    // console.log("lembrando que ultimaColuna tem que ser < colunaIndex")
+    
+    // for (let i = 0; i < logica?.eixox.length; i++) {
+    for (let i = ultimaColuna; i < colunaIndex+1; i++) {
+      console.log("estou na coluna de tempo " + i)
+      //percorre todas as u.t.
+      for (let j = 0; j < processos.length; j++) {
+        //percorre todos os processos
+        if (logica?.matriz[j][i] == "green") {
+          console.log("identifiquei que o processo ", j+1, "deu green")
+          //processo está executando
+          // console.log("quem deu green dessa vez foi o processo:" + (j+1))
+          // tamanhoDisco = enderecosDisco.length
+          let tamanhoDisco = enderecosDisco.length
+          console.log("tamanho do disco é: " + tamanhoDisco)
+          //esse for abaixo tá dando loop se for diferente de 0
+          for (let k = 0; k < tamanhoDisco; k++) {
+            //percorre os slots do disco
+            // console.log(enderecosDisco[k].props.nProcesso)
+            // console.log(enderecosDisco[0])
+            // console.log("o valor de k é:" + k)
+            // console.log("o valor no slot k é:" + enderecosDisco[1].props.nProcesso)
+            if ((enderecosDisco[k].props.nProcesso) == (j+1)) {
+              //achamos o processo que está executando dentro do disco
+              // console.log("o green está armazenado no slot " + k + " do disco")
+              for (let l = 0; l < 50; l++) {
+                if (enderecosRam[l].props.nProcesso == 0) {
+                  //este endereço da RAM está livre
+                  enderecosRam.splice(l, 0, (<Ram id={l} nProcesso={j+1} />)) //adiciona
+                  console.log("estou adicionando o processo ", j+1, "na memória RAM")
+                  console.log("a situação atual dos endereços da ram é: ", enderecosRam)
+                  enderecosRam.splice(l+1, 1) //remove
+                  console.log("a situação dos endereços da ram depois da remoção é: ", enderecosRam)
+                  enderecosDisco.splice(k, 0, (<Disco id={k} nProcesso={0} />)) //adiciona
+                  enderecosDisco.splice(k+1, 1) //remove
+                  //condição necessária para atualizar a memória pós última coluna
+                  if (colunaIndex+1 == logica.eixox.length) {
+                    setVerifiqueiRam(-1)
+                  }
+                  // console.log("Estamos tentando manipular sua RAM")
+                  break
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   } 
 
   useEffect(() => {
     if (!logica?.eixox || logica?.eixox.length === 0) return;
 
     const mostrarColunasComDelay = async () => {
+      criarDisco()
+      criarRam()
       for (let i = 0; i < logica.eixox.length; i++) {        
         await delay(escolhas.delay * 1000)
         setColunasVisiveis((prev) => [...prev, i])
+        setVerifiqueiRam(i)
       }
     }
 
     mostrarColunasComDelay();
-  }, [logica?.eixox, escolhas.delay])  
+  }, [logica?.eixox, escolhas.delay])
 
   useEffect(() => {
-    {exibirGrafico && logica?.eixox.map((_, colunaIndex) => (
-      colunasVisiveis.includes(colunaIndex) && verificarRam(colunaIndex)
-  ))}
-  }, [logica?.eixox, escolhas.delay])
+    if (verifiqueiRam == -1) { //coloquei esse if para não criar disco e ram ao predefinir o valor de exibirGrafico no useState
+      return;
+    }
+    verificarRam(verifiqueiRam)
+  //   {exibirGrafico && logica?.eixox.map((_, colunaIndex) => (
+  //     colunasVisiveis.includes(colunaIndex) && verificarRam(colunaIndex)
+  // ))}
+  }, [verifiqueiRam])
+  // }, [logica?.eixox, escolhas.delay])
 
   return (
     <>          

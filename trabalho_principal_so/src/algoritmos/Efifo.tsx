@@ -112,8 +112,8 @@ const processos3 = [
     { key: 5, tempoDeChegada: 8, tempoDeExecucao: 10, deadline: 0, paginas: 1 }
 ];
 
-console.log(Efifo(processos1))
-console.log(Efifo(processos2))
-console.log(Efifo(processos3))
+// console.log(Efifo(processos1))
+// console.log(Efifo(processos2))
+// console.log(Efifo(processos3))
 
 export default Efifo

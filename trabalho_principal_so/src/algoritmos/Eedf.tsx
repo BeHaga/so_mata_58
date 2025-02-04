@@ -166,7 +166,7 @@ const processosTeste = [
     { key: 4, tempoDeChegada: 6, tempoDeExecucao: 6, deadline: 15, paginas: 1 },
 ]
 
-console.log(Eedf(processosTeste, 2, 1))
+// console.log(Eedf(processosTeste, 2, 1))
 // console.log(Eedf(processos1, 2, 1))
 
 export default Eedf

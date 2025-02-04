@@ -151,8 +151,8 @@ const processos3 = [
     { key: 5, tempoDeChegada: 8, tempoDeExecucao: 10, deadline: 0, paginas: 1 }
 ];
 
-console.log(Err(processos1, 2, 1))
-console.log(Err(processos2, 2, 1))
-console.log(Err(processos3, 2, 1))
+// console.log(Err(processos1, 2, 1))
+// console.log(Err(processos2, 2, 1))
+// console.log(Err(processos3, 2, 1))
 
 export default Err

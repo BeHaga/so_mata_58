@@ -136,8 +136,8 @@ const processos3 = [
 ];
 
 
-console.log(Esjf(processos1));
-console.log(Esjf(processos2));
-console.log(Esjf(processos3));
+// console.log(Esjf(processos1));
+// console.log(Esjf(processos2));
+// console.log(Esjf(processos3));
 
 export default Esjf

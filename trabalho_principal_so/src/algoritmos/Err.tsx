@@ -80,10 +80,22 @@ function Err (processos: {key: number, tempoDeChegada: number, tempoDeExecucao: 
                 processosIniciais[i].estadosProcesso.push("gray")
             }                        
         }
-        if (sobrecargaAcabou.length != 0) {                   
+        console.log("a fila está assim:", fila)
+        if (sobrecargaAcabou.length != 0) {  
+            //se acabou a sobrecarga, verifica se algum processo chegou
+            // tempoDecorrido += 1
+            for (let i = 0; i < processosIniciais.length; i++) {
+                console.log("tempo decorrido +1:", tempoDecorrido+1)
+                if (processosIniciais[i].tempoDeChegada == tempoDecorrido+1) {
+                    isFila(i)
+                    console.log("a fila está assim:", fila)
+                }
+            }
             fila.push(sobrecargaAcabou[0])
             fila.shift()
+            console.log("a fila está assim:", fila)
             sobrecargaAcabou.shift()
+            // Executar()
         }
         if (processoAcabou.length != 0) {
             fila.shift()
@@ -150,6 +162,23 @@ const processos3 = [
     { key: 4, tempoDeChegada: 6, tempoDeExecucao: 6, deadline: 0, paginas: 1 },
     { key: 5, tempoDeChegada: 8, tempoDeExecucao: 10, deadline: 0, paginas: 1 }
 ];
+//13
+const processos4 = [
+  { key: 1, tempoDeChegada: 0, tempoDeExecucao: 8, deadline: 0, paginas: 1 },
+  { key: 2, tempoDeChegada: 6, tempoDeExecucao: 4, deadline: 0, paginas: 1 },
+  { key: 3, tempoDeChegada: 12, tempoDeExecucao: 2, deadline: 0, paginas: 1 },
+  { key: 4, tempoDeChegada: 12, tempoDeExecucao: 7, deadline: 0, paginas: 1 },
+];
+//18.5
+const processos5 = [
+    { key: 1, tempoDeChegada: 0, tempoDeExecucao: 14, deadline: 0, paginas: 1 },
+    { key: 2, tempoDeChegada: 2, tempoDeExecucao: 4, deadline: 0, paginas: 1 },
+    { key: 3, tempoDeChegada: 4, tempoDeExecucao: 2, deadline: 0, paginas: 1 },
+    { key: 4, tempoDeChegada: 6, tempoDeExecucao: 6, deadline: 0, paginas: 1 }
+];
+
+console.log(Err(processos5, 2, 1));
+// console.log(Err(processos4, 2, 1));
 
 // console.log(Err(processos1, 2, 1))
 // console.log(Err(processos2, 2, 1))

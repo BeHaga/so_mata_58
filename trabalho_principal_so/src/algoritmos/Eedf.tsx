@@ -34,6 +34,7 @@ function Eedf (processos: {key: number, tempoDeChegada: number, tempoDeExecucao:
             aux -= 1
         }
         fila = filaNova
+        console.log("fila está assim", fila)
     }
 
     let tempoDecorrido = 0; //exe + nda + sobrecarga || determina se algum processo já foi executado
@@ -116,8 +117,10 @@ function Eedf (processos: {key: number, tempoDeChegada: number, tempoDeExecucao:
             fila.shift()
             processoAcabou.shift()
         }
-        tempoDecorrido += 1        
-        ordenarPorDeadlineRestante()
+        tempoDecorrido += 1
+        if (qtdGreen == 0) {            
+            ordenarPorDeadlineRestante()
+        }        
     }
 
     while (processosCopia.some(p => p.tempoExecutado != p.tempoDeExecucao)) {
@@ -164,6 +167,15 @@ const processosTeste = [
     { key: 3, tempoDeChegada: 4, tempoDeExecucao: 2, deadline: 8, paginas: 1 },
     { key: 4, tempoDeChegada: 6, tempoDeExecucao: 6, deadline: 15, paginas: 1 },
 ]
+//11.5
+const processo2 = [
+    { key: 1, tempoDeChegada: 0, tempoDeExecucao: 8, deadline: 35, paginas: 1 },
+    { key: 2, tempoDeChegada: 4, tempoDeExecucao: 4, deadline: 15, paginas: 1 },
+    { key: 3, tempoDeChegada: 8, tempoDeExecucao: 2, deadline: 20, paginas: 1 },
+    { key: 4, tempoDeChegada: 12, tempoDeExecucao: 7, deadline: 24, paginas: 1 },
+  ];
+  
+// console.log(Eedf(processo2, 2, 1));
 
 // console.log(Eedf(processosTeste, 1, 2).tempoMedio)
 // console.log(Eedf(processosTeste, 1, 2).matriz)

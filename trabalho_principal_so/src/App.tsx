@@ -339,7 +339,7 @@ function App() {
     }
 
     mostrarColunasComDelay();
-  }, [logica?.eixox, escolhas.delay])
+  }, [logica?.eixox])
 
   useEffect(() => {
     if (verifiqueiRam == -1) { //coloquei esse if para não criar disco e ram ao predefinir o valor de exibirGrafico no useState

@@ -14,7 +14,7 @@
 - **Dia 02/02:** Ajustes no front-end, adição do Disco e RAM, implementação do delay no gráfico de Gantt (✅)
 - **Dia 03/02:** Transferência do Disco para a RAM (✅)
 - **Dia 04/02:** Inserção do escalonador EDF (✅)
-- **Dia 05/02:** Correção nos escalonadores EDF e RR (✅)
+- **Dia 05/02:** Correção nos escalonadores EDF e RR, algoritmos de substituição estão 100% funcionais (✅)
 
 ## 1. Descrição Geral do Projeto
 - Cada processo deve ter até 10 páginas (entrada do usuário). Cada página tem 4K de tamanho. A RAM tem 200 K de memória.

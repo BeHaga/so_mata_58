@@ -33,8 +33,7 @@ function App() {
   const [enderecosDisco, setEnderecosDisco] = useState<JSX.Element[]>([])
   const [enderecosRam, setEnderecosRam] = useState<JSX.Element[]>([])
   const [verifiqueiRam, setVerifiqueiRam] = useState<number>(-1);
-  const [ordemSubstituicaoFifo, setOrdemSubstituicaoFifo] = useState<number[]>([])
-  const [ordemSubstituicaoLru, setOrdemSubstituicaoLru] = useState<number[]>([])
+  const [ordemSubstituicao, setOrdemSubstituicao] = useState<number[]>([])
 
   const criarProcesso = () => {
     const novoProcesso = {key: processos.length + 1, tempoDeChegada: 0, tempoDeExecucao: 1, deadline: 0, paginas: 1};
@@ -75,6 +74,7 @@ function App() {
   }
 
   const executar = async () => {
+    setOrdemSubstituicao([])
     if (escolhas.escalonamento === 'FIFO') {
       setColunasVisiveis([])
       const escalonador = Efifo(processos);
@@ -132,183 +132,143 @@ function App() {
     return novosEnderecosRam
   }
 
-  const verificarRam = (colunaIndex: number) => {    
+  function procuraGreen(linha: number, coluna: number) {
+    if (!logica?.eixox || logica?.eixox.length === 0) return;
+    let lin = linha
+    let col = coluna
+    let achei = -1
+    for (let i = 0; i < lin; i++) {
+      if (logica?.matriz[i][col] == "green") {
+        console.log("procura Green disse que achou o processo", i+1, "dando green")
+        achei = i
+        break
+      }
+    }
+    return achei
+  }
+
+  const verificarRam = (colunaIndex: number, paginasFaltantes: number) => {    
     if (!logica?.eixox || logica?.eixox.length === 0) return;
     console.log("iniciei o verificarRam")
 
-    // console.log("verifiquei RAM pela ",colunaIndex + 1, "ª vez")
-
-    let ultimaColuna = colunaIndex
+    const processoGreen = procuraGreen(processos.length, colunaIndex)
     
-    // for (let i = 0; i < logica?.eixox.length; i++) {
-    for (let i = ultimaColuna; i < colunaIndex+1; i++) {
-      // console.log("estou na coluna de tempo " + i)
-      //percorre todas as u.t.
-      for (let j = 0; j < processos.length; j++) {
-        let PaginasRestante = processos[j].paginas
-        //percorre todos os processos
-        if (logica?.matriz[j][i] == "green") {
-          // console.log("identifiquei que o processo ", j+1, "deu green")
-          //processo está executando
-          // console.log("quem deu green dessa vez foi o processo:" + (j+1))
-          // tamanhoDisco = enderecosDisco.length
-          let tamanhoDisco = enderecosDisco.length
-          // console.log("tamanho do disco é: " + tamanhoDisco)
-          //esse for abaixo tá dando loop se for diferente de 0
-          for (let k = 0; k < tamanhoDisco; k++) {
-            //percorre os slots do disco
-            // console.log(enderecosDisco[k].props.nProcesso)
-            // console.log(enderecosDisco[0])
-            // console.log("o valor de k é:" + k)
-            // console.log("o valor no slot k é:" + enderecosDisco[1].props.nProcesso)
-            if ((enderecosDisco[k].props.nProcesso) == (j+1)) {
-              //achamos o processo que está executando dentro do disco
-              // console.log("o green está armazenado no slot " + k + " do disco")
-              let ramLivre = 0
-              for (let l = 0; l < 50; l++) {
-                if (enderecosRam[l].props.nProcesso == 0) {
-                  //estou calculando quanto de espaço tem livre na RAM
-                  ramLivre += 1
+    if (processoGreen === undefined || processoGreen === -1) return;
+
+    let PaginasRestante = paginasFaltantes
+
+    if (PaginasRestante == 0) {
+      PaginasRestante = processos[processoGreen].paginas
+    }
+
+    //processo está executando, ou seja, dando green
+    let tamanhoDisco = enderecosDisco.length
+    
+    //esse for abaixo tá dando loop se for diferente de 0
+    for (let k = 0; k < tamanhoDisco; k++) {
+      //percorre os slots do disco
+      if ((enderecosDisco[k].props.nProcesso) == (processoGreen+1)) {
+        //achamos uma página do processo que está executando dentro do disco
+        let ramLivre = 0
+        for (let l = 0; l < 50; l++) {
+          if (enderecosRam[l].props.nProcesso == 0) {
+            //estou calculando quanto de espaço tem livre na RAM
+            ramLivre += 1
+          }
+        }
+
+        //tem RAM livre suficiente para alocar todas as páginas do processo que está executando
+        if (ramLivre >= PaginasRestante) {
+          for (let l = 0; l < 50; l++) {
+            if ((enderecosRam[l].props.nProcesso == 0) && (ramLivre >= PaginasRestante)) {
+              //este endereço da RAM está livre
+              altereiRam(l,processoGreen+1)
+              altereiDisco(k,0)
+              PaginasRestante -= 1
+              //condição necessária para atualizar a memória pós última coluna
+              if (colunaIndex+1 == logica.eixox.length) {
+                setVerifiqueiRam(-1)
+              }
+              if (PaginasRestante == 0) {
+                if (escolhas.paginacao == 'LRU') {
+                  setOrdemSubstituicao(Slru(ordemSubstituicao, processoGreen+1))
+                } else {                        
+                  setOrdemSubstituicao(Sfifo(ordemSubstituicao, processoGreen+1))
                 }
               }
-              // console.log("estou com a ram livre de", ramLivre)
-              // console.log("meu processo precisa de", PaginasRestante)
-              // console.log("valor k é", k)
+              break
+            } 
+          }
+        } else {
+          //gerei todas as páginas dos processos que cabem 100% na RAM antes de substituição, mas faltou esse processo
 
-              //1° for
-              if (ramLivre >= PaginasRestante) {
-                for (let l = 0; l < 50; l++) {
-                  if ((enderecosRam[l].props.nProcesso == 0) && (ramLivre >= PaginasRestante)) {
-                    //este endereço da RAM está livre
-                    altereiRam(l,j+1)
-                    // enderecosRam.splice(l, 0, (<Ram id={l} nProcesso={j+1} />)) //adiciona
-                    // enderecosRam.splice(l+1, 1) //remove
-                    altereiDisco(k,0)
-                    // enderecosDisco.splice(k, 0, (<Disco id={k} nProcesso={0} />)) //adiciona
-                    // enderecosDisco.splice(k+1, 1) //remove
-                    PaginasRestante -= 1
-                    //condição necessária para atualizar a memória pós última coluna
-                    if (colunaIndex+1 == logica.eixox.length) {
-                      // console.log("NÃO ESTÁ OCORRENDO")
-                      setVerifiqueiRam(-1)
-                    }
-                    // console.log("valor de j+1 =", j+1)
-                    if (PaginasRestante == 0) {
-                      // console.log("fim do processo", j+1, "e status da OrdemSubstitucaoFifo", ordemSubstituicaoFifo)
-                      setOrdemSubstituicaoFifo(Sfifo(ordemSubstituicaoFifo, j+1))
-                    }
-                    // console.log("array está dando", ordemSubstituicaoFifo, "no fim do for 1")
-                    // console.log("Estamos tentando manipular sua RAM")
-                    break
-                  } 
-                }
-              } else {
-                //gerei todas as páginas dos processos que cabem 100% na RAM antes de substituição
+          //ainda tem alguns espaços livres na RAM, mas não o suficiente
+          for (let l = 50-ramLivre; l < 50; l++) {
+            //preenchendo a ram que estava vazia com páginas do processo que está executando
+            altereiRam(l,processoGreen+1)
+            altereiDisco(k,0)
+            PaginasRestante -= 1
+          }
 
-                //2° for
-                //ainda tem alguns espaços livres na RAM, mas não o suficiente
-                // console.log("estou antes de entrar no 2° for")
-                for (let l = 50-ramLivre; l < 50; l++) {
-                  // console.log("valor do j é", j)
-                  // console.log("valor do k é", k)
-                  // console.log("valor do l é", l)
-                  altereiRam(l,j+1)
-                  altereiDisco(k,0)
-                  console.log("preenchendo a ram", l, "que estava vazia. Entrando com o", j+1)
-                  PaginasRestante -= 1
-                  // break
+          //RAM está sem espaços livres         
+          for (let l = 0; l < 50-ramLivre; l++) {
+            //percorrendo todas as partições da ram, até a RAM que estava livre antes
+            
+            if ((enderecosRam[l].props.nProcesso == ordemSubstituicao[0]) && (PaginasRestante > 0)) {
+              //substituindo uma página do processo que estava em 1° na ordem de substituição por uma página do processo que está executando
+              altereiRam(l,processoGreen+1)
+              for (let m = 0; m < enderecosDisco.length; m++) {
+                //página que estava na RAM sendo realocada para o disco
+                if (enderecosDisco[m].props.nProcesso == 0) {
+                  altereiDisco(m, ordemSubstituicao[0])
+                  // altereiDisco(k,0)
+                  break
                 }
-                if (colunaIndex+1 == logica.eixox.length) {
-                  // console.log("NÃO ESTÁ OCORRENDO")
-                  setVerifiqueiRam(-1)
-                  // console.log("array está dando", ordemSubstituicaoFifo, "no fim do for 2")
+              }
+              for (let m = 0; m < enderecosDisco.length; m++) {
+                //processo que foi alocado na RAM tem seu disco zerado
+                if (enderecosDisco[m].props.nProcesso == processoGreen+1) {
+                  altereiDisco(m,0)
+                  break
                 }
+              }                  
+              PaginasRestante -= 1
+            }                
 
-                //3° for  
-                //RAM sem espaços livres            
-                // console.log("o processo", j+1, "falta alocar", PaginasRestante, "páginas")
-                // console.log("estou antes de entrar no 3° for")
-                
-                for (let l = 0; l < 50-ramLivre; l++) {
-                  //percorrendo todas as partições da ram, até a RAM que estava livre antes
-                  // console.log("o próximo processo a ser substituido é o", ordemSubstituicaoFifo[0])
-                  
-                  if ((enderecosRam[l].props.nProcesso == ordemSubstituicaoFifo[0]) && (PaginasRestante > 0)) {
-                    // console.log("Substituindo a página do processo", ordemSubstituicaoFifo[0], "por", j+1, "no slot", l)
-                    // console.log(enderecosRam[l].props.nProcesso, ":", ordemSubstituicaoFifo[0])
-                    // console.log("achei o endereço de RAM", l, "quem tem uma página do processo que eu quero")
-                    // console.log("falta alocar", PaginasRestante, "páginas")
-                    // console.log("a RAM", l, "está recebendo uma página do processo", j+1)
-                    altereiRam(l,j+1)
-                    // console.log("o disco", k, "está sendo redefinido para ?")
-                    // altereiDisco(k,0)
-                  //   console.log("valor do j é", j) //processo
-                  //   console.log("valor do k é", k) //próxima página do disco a ir pra ram
-                  //   console.log("valor do l é", l) //endereço da ram que tem o processo que queremos substituir
-                    for (let m = 0; m < enderecosDisco.length; m++) {
-                      //página que estava na RAM sendo realocada para o disco
-                      if (enderecosDisco[m].props.nProcesso == 0) {                        
-                        // console.log("o disco", m, "está sendo redefinido para ?")
-                        // console.log("array está dando", ordemSubstituicaoFifo, "no fim do for 3")
-                        altereiDisco(m, ordemSubstituicaoFifo[0])
-                        altereiDisco(k,0)
-                        break
-                      }
-                    }
-                    for (let m = 0; m < enderecosDisco.length; m++) {
-                      //processo que foi alocado na RAM tem seu disco zerado
-                      if (enderecosDisco[m].props.nProcesso == j+1) {                        
-                        // console.log("o disco", m, "está sendo redefinido para ?")
-                        // console.log("array está dando", ordemSubstituicaoFifo, "no fim do for 3")
-                        altereiDisco(m,0)
-                        // altereiDisco(k,0)
-                        break
-                      }
-                    }                  
-                    PaginasRestante -= 1
-                  //   break
-                  }                
-
-                  if (PaginasRestante == 0) {
-                    setOrdemSubstituicaoFifo(Sfifo(ordemSubstituicaoFifo, j+1))
-                    break
-                  } else if ((PaginasRestante > 0) && (l == 50-ramLivre-1)) {
-                    console.log("paginasRestantes:", PaginasRestante, "estouNaRam:", l, "meu processo atual:", j+1)
-                    let achei = false
-                    for (let m = 0; m < enderecosRam.length; m++) {
-                      //processo que foi alocado na RAM tem seu disco zerado
-                      if (enderecosRam[m].props.nProcesso == ordemSubstituicaoFifo[0]) {    
-                        achei = true
-                        break
-                      }
-                    }
-                    console.log("substituir:", ordemSubstituicaoFifo[0], "achei:", achei)
-                    if (!achei) { 
-                      ordemSubstituicaoFifo.shift()
-                      console.log("fila de ordem de substituição é:", ordemSubstituicaoFifo)
-                      //após a exclusão do processo que acabou, deveria ir para o 1° if desse for
-                      // mudouOrdem()
-                      verificarRam(colunaIndex) //tenho que garantir que o antigo ordemSubstituicaoFifo[0]
-                      //quando verifico novamente, o valor de paginas restante redefine
-                    }                  
-                  } else if ((PaginasRestante == 0) && (l == 50-ramLivre-1)) {
-                    ordemSubstituicaoFifo.shift()
-                  }                 
+            if (PaginasRestante == 0) {
+              if (escolhas.paginacao == 'LRU') {
+                setOrdemSubstituicao(Slru(ordemSubstituicao, processoGreen+1))
+              } else {                        
+                setOrdemSubstituicao(Sfifo(ordemSubstituicao, processoGreen+1))
+              }
+              break
+            } else if ((PaginasRestante > 0) && (l == 50-ramLivre-1)) {
+              let achei = false
+              for (let m = 0; m < enderecosRam.length; m++) {
+                //processo que foi alocado na RAM tem seu disco zerado
+                if (enderecosRam[m].props.nProcesso == ordemSubstituicao[0]) {    
+                  achei = true
+                  break
                 }
-                
-                if (colunaIndex+1 == logica.eixox.length) {
-                  console.log("NÃO ESTÁ OCORRENDO")
-                  setVerifiqueiRam(-1)
-                }
-              } //alterações no disco e na ram 
-            } //fim do if que valido que o processo que deu green tá no disco
-          } //fim do for do disco
-        } //fim do if de executado
-        if (PaginasRestante == 0) {
-          break
-        }
-      } //fim do for de processos
-    } //fim do for de colunas
+              }
+              if (!achei) {
+                //não achei nenhuma página do 1º processo a ser substituido dentro da RAM, logo vou remover ele da fila de substituição  
+                ordemSubstituicao.shift()
+                //preciso continuar a verificação com as páginas de outros processos
+                verificarRam(colunaIndex, PaginasRestante)
+              }                  
+            } else if ((PaginasRestante == 0) && (l == 50-ramLivre-1)) {
+              ordemSubstituicao.shift()
+            }
+            if ((l == 50-ramLivre-1) && (colunaIndex+1 == logica.eixox.length)) {
+              //se for a última coluna, set -1 para o useEffect exibir a adição do último green na RAM
+              console.log("Encerei tudo aqui!")
+              setVerifiqueiRam(-1)
+            }           
+          }
+        } //alterações no disco e na ram 
+      } //fim do if que valido que o processo que deu green tá no disco
+    } //fim do for do disco
   }
 
   const altereiRam = (num: number, pro: number) => {
@@ -345,7 +305,7 @@ function App() {
     if (verifiqueiRam == -1) { //coloquei esse if para não criar disco e ram ao predefinir o valor de exibirGrafico no useState
       return;
     }
-    verificarRam(verifiqueiRam)
+    verificarRam(verifiqueiRam, 0)
   }, [verifiqueiRam])
 
   return (

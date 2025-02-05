@@ -177,7 +177,7 @@ const processos5 = [
     { key: 4, tempoDeChegada: 6, tempoDeExecucao: 6, deadline: 0, paginas: 1 }
 ];
 
-console.log(Err(processos5, 2, 1));
+// console.log(Err(processos5, 2, 1));
 // console.log(Err(processos4, 2, 1));
 
 // console.log(Err(processos1, 2, 1))
